@@ -13,6 +13,23 @@
         state: restarted
         enabled: yes
 
+    - name: apply network update
+      reboot:
+
+    - name: set node labels
+      delegate_to: "{{groups['master'][0]}}"
+      community.docker.docker_node:
+        hostname: "{{inventory_hostname}}"
+        labels:
+          database: "true"
+          storage: "false"
+          compute: "false"
+          grafana: "true"
+          ldap: "true"
+          portainer: "true"
+        labels_state: merge
+
+
   tasks:
     - name: install apt librarries
       apt:
@@ -44,6 +61,12 @@
         sysctl_set: yes
         state: present
         reload: yes
+    - name: create bridge
+      template:
+        src="bridge-config.yml"
+        dest="/etc/netplan/99-bridge-config.yaml"
+      nootify:
+        - apply network update
 
 
     - set_fact:
@@ -80,20 +103,6 @@
         remote_addrs: "{{groups['master']}}"
         join_token: "{{docker_token}}"
         state: join
+      notify:
+        - set node labels
 
-    - name: set node labels
-      community.docker.docker_node:
-        hostname: "{{inventory_hostname}}"
-        labels:
-          database: "true"
-          storage: "false"
-          compute: "false"
-          grafana: "true"
-          ldap: "true"
-          portainer: "true"
-        labels_state: merge
-
-    - name: create bridge
-      template:
-        src="bridge-config.yml"
-        dest="/etc/netplan/99-bridge-config.yaml"
