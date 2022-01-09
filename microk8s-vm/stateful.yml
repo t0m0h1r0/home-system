@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: persistent-stateset
+spec:
+  serviceName: nginx-service
+  replicas: 10
+  selector:
+    matchLabels:
+      app: persistent-stateful
+  template:
+    metadata:
+      labels:
+        app: persistent-stateful
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - name: pvc-volume
+            mountPath: "/usr/share/nginx/html"
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-volume
+    spec:
+      #storageClassName: openebs-jiva-csi-default
+      storageClassName: synology-iscsi-storage
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi

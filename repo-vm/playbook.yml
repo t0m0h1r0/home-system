@@ -1,0 +1,45 @@
+- hosts: regs
+  vars:
+    iscsi_target: 192.168.10.173
+    iscsi_iqn: iqn.2000-01.com.synology:syn1.default-target.9c3409d65fa
+    iscsi_uuid: 511bfdf5-99f7-45d3-83aa-1a31ecbfd844
+    mount_point: /mnt/iscsi
+  become: true
+  tasks:
+    - name: install librarries
+      apt:
+        name: "{{item}}"
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+      loop:
+        - docker.io
+        - docker-compose
+        - python3-docker
+
+    - set_fact:
+        docker_vars: {}
+    - name: append key/values
+      set_fact:
+        docker_vars: "{{ docker_vars | default([]) | combine({ item.key : item.value }) }}"
+      loop:
+        - { key: "insecure-registries", value: [ "{{groups['regs'][0]}}:5000" ] }
+    - name: write var to file
+      copy:
+        content: "{{ docker_vars | to_nice_json }}"
+        dest: /etc/docker/daemon.json
+
+    - name: restart Docker
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+
+    - name: application container
+      community.docker.docker_container:
+        name: GitLab
+        image: gitlab/gitlab-ce:12.7.4-ce.0
+        state: started
+        restart_policy: always
+        ports:
+        - "8443:8443"
+        - "25000:25000"

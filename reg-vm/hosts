@@ -1,0 +1,5 @@
+[registry]
+reg1 ansible_connection=ssh
+
+[workers]
+reg1 ansible_connection=lxd
