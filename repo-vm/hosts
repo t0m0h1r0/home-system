@@ -1,2 +1,0 @@
-[regs]
-reg1  ansible_connection=lxd
