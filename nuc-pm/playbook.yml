@@ -92,3 +92,8 @@
           ldap: "true"
           portainer: "true"
         labels_state: merge
+
+    - name: create bridge
+      template:
+        src="bridge-config.yml"
+        dest="/etc/netplan/99-bridge-config.yaml"
