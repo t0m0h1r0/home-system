@@ -1,18 +1,5 @@
 - hosts: workers
-  vars:
-    iscsi_target: 192.168.10.173
-    iscsi_iqn: iqn.2000-01.com.synology:syn1.default-target.9c3409d65fa
-    iscsi_uuid: 511bfdf5-99f7-45d3-83aa-1a31ecbfd844
-    mount_point: /mnt/iscsi
-    docker_token: SWMTKN-1-39rudkfcvqnt8nnw8qnrvzt9u6uljeh13zw5fs0ye3ovp09tjy-574y8bblenotd3il7v6wca5f4
   become: true
-  handlers:
-    - name: restart Docker
-      service:
-        name: docker
-        state: restarted
-        enabled: yes
-
   tasks:
     - name: install librarries
       apt:
@@ -24,23 +11,37 @@
         - docker-compose
         - python3-docker
 
+- hosts: workers
+  become: true
+  tasks:
     - set_fact:
         docker_vars: {}
     - name: append key/values
       set_fact:
         docker_vars: "{{ docker_vars | default([]) | combine({ item.key : item.value }) }}"
       loop:
-        - { key: "insecure-registries", value: "[ {{inventory_hostname}}:5000 ]" }
+        - { key: "insecure-registries", value: [ "{{inventory_hostname}}:5000" ] }
     - name: write var to file
       copy:
         content: "{{ docker_vars | to_nice_json }}"
         dest: /etc/docker/daemon.json
-      notify: restart Docker
+      notify:
+        - restart Docker
 
+  handlers:
+    - name: restart Docker
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+
+- hosts: workers
+  become: true
+  tasks:
     - name: start Docker registry
       community.docker.docker_container:
         name: registry
         image: registry:latest
         ports:
           - 5000:5000
-        state: present
+        state: started
