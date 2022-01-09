@@ -1,35 +1,27 @@
 - hosts: workers
-  vars:
-    iscsi_target: 192.168.10.173
-    iscsi_iqn: iqn.2000-01.com.synology:syn1.default-target.9c3409d65fa
-    iscsi_uuid: 511bfdf5-99f7-45d3-83aa-1a31ecbfd844
-    mount_point: /mnt/iscsi
-    docker_token: SWMTKN-1-39rudkfcvqnt8nnw8qnrvzt9u6uljeh13zw5fs0ye3ovp09tjy-9jw40a40f7usvmxv0vl4mcgbu
   become: true
-  handlers:
-    - name: restart Docker
-      service:
-        name: docker
-        state: restarted
-        enabled: yes
+  tasks:
+    - name: update /etc/sysctl.conf
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+    - name: create bridge
+      template:
+        src="bridge-config.yml"
+        dest="/etc/netplan/99-bridge-config.yaml"
+      nootify:
+        - apply network update
 
+  handlers:
     - name: apply network update
       reboot:
 
-    - name: set node labels
-      delegate_to: "{{groups['master'][0]}}"
-      community.docker.docker_node:
-        hostname: "{{inventory_hostname}}"
-        labels:
-          database: "true"
-          storage: "false"
-          compute: "false"
-          grafana: "true"
-          ldap: "true"
-          portainer: "true"
-        labels_state: merge
 
-
+- hosts: workers
+  become: true
   tasks:
     - name: install apt librarries
       apt:
@@ -53,22 +45,11 @@
       loop:
         - lxd
 
-
-    - name: update /etc/sysctl.conf
-      ansible.posix.sysctl:
-        name: net.ipv4.ip_forward
-        value: '1'
-        sysctl_set: yes
-        state: present
-        reload: yes
-    - name: create bridge
-      template:
-        src="bridge-config.yml"
-        dest="/etc/netplan/99-bridge-config.yaml"
-      nootify:
-        - apply network update
-
-
+- hosts: workers
+  vars:
+    docker_token: SWMTKN-1-39rudkfcvqnt8nnw8qnrvzt9u6uljeh13zw5fs0ye3ovp09tjy-9jw40a40f7usvmxv0vl4mcgbu
+  become: true
+  tasks:
     - set_fact:
         docker_vars: {}
     - name: append key/values
@@ -106,3 +87,22 @@
       notify:
         - set node labels
 
+  handlers:
+    - name: restart Docker
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+
+    - name: set node labels
+      delegate_to: "{{groups['master'][0]}}"
+      community.docker.docker_node:
+        hostname: "{{inventory_hostname}}"
+        labels:
+          database: "true"
+          storage: "false"
+          compute: "false"
+          grafana: "true"
+          ldap: "true"
+          portainer: "true"
+        labels_state: merge
