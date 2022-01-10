@@ -94,7 +94,9 @@
 
   handlers:
     - name: set node labels
-      delegate_to: "{{groups['master'][0]}}"
+      pause:
+        minutes: 1
+    - delegate_to: "{{groups['master'][0]}}"
       community.docker.docker_node:
         hostname: "{{inventory_hostname}}"
         labels:
