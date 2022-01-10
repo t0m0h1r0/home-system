@@ -1,0 +1,42 @@
+- hosts: masters[0]
+  vars:
+  tasks:
+    - name: install librarries
+      snap:
+        name: "{{item}}"
+      loop:
+        - lxd
+
+    - name: create profile
+      community.general.lxd_profile:
+        name: bridge
+        state: present
+        config: {}
+        devices:
+          eth0:
+            nictype: bridged
+            parent: br0
+            type: nic
+          root:
+            path: /
+            pool: default
+            type: disk
+    - name: deploy VMs
+      community.general.lxd_container:
+        name: "{{item}}"
+        type: virtual-machine
+        state: started
+        source:
+          type: image
+          mode: pull
+          alias: ubuntu/focal/amd64  # == ubuntu:18.04
+          protocol: simplestreams
+          server: https://images.linuxcontainers.org
+        profiles: ["bridge"]
+        config:
+          limits.cpu: "1"
+          limits.memory: 1GiB
+        wait_for_ipv4_addresses: true
+        ignore_volatile_options: false
+      loop: "{{groups['vms']}}"
+

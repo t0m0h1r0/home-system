@@ -86,7 +86,7 @@
 
     - name: join Docker swarm
       community.docker.docker_swarm:
-        remote_addrs: "{{groups['master']}}"
+        remote_addrs: "{{groups['masters']}}"
         join_token: "{{docker_token}}"
         state: join
       notify:
@@ -96,7 +96,7 @@
     - name: set node labels
       pause:
         seconds: 10
-    - delegate_to: "{{groups['master'][0]}}"
+    - delegate_to: "{{groups['masters'][0]}}"
       community.docker.docker_node:
         hostname: "{{inventory_hostname}}"
         labels:
