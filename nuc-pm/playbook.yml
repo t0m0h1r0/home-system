@@ -1,5 +1,7 @@
 - hosts: workers
   become: true
+  vars:
+    eth_dev: eno1
   tasks:
     - name: update /etc/sysctl.conf
       ansible.posix.sysctl:
@@ -10,8 +12,8 @@
         reload: yes
     - name: create bridge
       template:
-        src="bridge-config.yml"
-        dest="/etc/netplan/99-bridge-config.yaml"
+        src: "bridge-config.yml.j2"
+        dest: "/etc/netplan/99-bridge-config.yaml"
       nootify:
         - apply network update
 

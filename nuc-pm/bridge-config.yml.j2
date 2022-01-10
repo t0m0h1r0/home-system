@@ -1,10 +1,10 @@
 network:
   ethernets:
-    eno1:
+    {{eth_dev}}:
       dhcp4: no
   bridges:
     br0:
       dhcp4: yes
       interfaces:
-        - eno1
+        - {{eth_dev}}
   version: 2
