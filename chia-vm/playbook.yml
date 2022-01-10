@@ -14,8 +14,7 @@
 
     - set_fact:
         docker_vars: {}
-    - name: append key/values
-      set_fact:
+    - set_fact:
         docker_vars: "{{ docker_vars | default([]) | combine({ item.key : item.value }) }}"
       loop:
         - { key: "insecure-registries", value: [ "{{groups['registry'][0]}}:5000" ] }
@@ -70,6 +69,7 @@
 
 - hosts: workers
   vars:
+    mount_point: /mnt/iscsi
     docker_token: SWMTKN-1-39rudkfcvqnt8nnw8qnrvzt9u6uljeh13zw5fs0ye3ovp09tjy-574y8bblenotd3il7v6wca5f4
   become: true
   tasks:
