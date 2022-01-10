@@ -50,7 +50,7 @@
       community.general.open_iscsi:
         portal: "{{iscsi_target}}"
         target: "{{iscsi_iqn}}"
-        discover: yes
+        #discover: yes
         login: yes
         auto_node_startup: true
 
