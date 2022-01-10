@@ -95,10 +95,10 @@
   handlers:
     - name: set node labels
       pause:
-        minutes: 1
+        seconds: 10
     - delegate_to: "{{groups['master'][0]}}"
       community.docker.docker_node:
         hostname: "{{inventory_hostname}}"
         labels:
           storage: "true"
-        labels_state: merge
+        labels_state: replace
