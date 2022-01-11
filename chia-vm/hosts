@@ -1,9 +1,13 @@
 [registry]
 reg1 ansible_connection=ssh
 
-[master]
-nuc2 ansible_connection=ssh
+[masters]
 nuc1 ansible_connection=ssh
 
 [workers]
 chia1 ansible_connection=lxd
+
+[vms]
+vm1 ansible_connection=lxd
+vm2 ansible_connection=lxd
+vm3 ansible_connection=lxd
