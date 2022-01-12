@@ -1,0 +1,16 @@
+[delegate]
+nuc1 ansible_connection=ssh
+
+[masters]
+nuc1 ansible_connection=ssh
+nuc2 ansible_connection=ssh
+
+[registry]
+reg1 ansible_connection=ssh
+
+[computes]
+test ansible_connection=lxd
+
+[vms]
+reg1 ansible_connection=ssh
+hrv1 ansible_connection=ssh

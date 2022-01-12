@@ -1,0 +1,19 @@
+- hosts: computes
+  vars:
+  become: true
+  tasks:
+    - name: install apt librarries
+      apt:
+        upgrade: full
+
+    - name: install apt librarries
+      apt:
+        name: "{{item}}"
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+      loop: "{{app_apt}}"
+
+    - name: install snap librarries
+      snap:
+        name: "{{item}}"
+      loop: "{{app_snap}}"

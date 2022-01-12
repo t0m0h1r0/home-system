@@ -1,0 +1,10 @@
+
+app_apt:
+  - docker.io
+  - docker-compose
+  - python3-docker
+  - ansible
+  - cockpit
+  - cockpit-pcp
+app_snap:
+  - lxd
