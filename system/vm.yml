@@ -1,8 +1,30 @@
+- hosts: nucs
+  vars:
+    eth_dev: eno1
+  tasks:
+    - import_tasks: 01_config_network.yml
+    - import_tasks: 09_deploy_vms.yml 
+      when: inventory_hostname == groups['nucs'][0]
+  handlers:
+    - import_tasks: 01_apply_config.yml
+
+- hosts: registry
+  become: yes
+  vars:
+    apt_apps:
+      - docker.io
+      - docker-compose
+      - python3-docker
+    snap_apps:
+  tasks:
+    - import_tasks: 02_install_apps.yml
+    - import_tasks: 06_config_docker.yml
+    - import_tasks: 08_config_registry.yml
+
 - hosts: workers managers
   become: yes
   vars:
-    eth_dev: eno1
-    apt_proxy: "{{groups['proxy'][0]}}"
+    apt_proxy: "{{groups['registry'][0]}}"
     apt_apps:
       - docker.io
       - docker-compose
@@ -19,10 +41,7 @@
     iscsi_uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
     mount_point: /mnt/iscsi
   tasks:
-    - import_tasks: 01_config_network.yml
     - import_tasks: 02_install_apps.yml
     - import_tasks: 05_config_iscsi.yml
     - import_tasks: 06_config_docker.yml
-  handlers:
-    - import_tasks: 01_apply_config.yml
-    - import_tasks: 06_apply_docker.yml
+    - import_tasks: 07_config_swarm.yml

@@ -1,0 +1,27 @@
+- name: init swarm
+  community.docker.docker_swarm:
+    state: present
+  register: result
+  when: 
+    - inventory_hostname == groups['managers'][0]
+- set_fact:
+    tokens:
+      manager: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Manager}}"
+      worker: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Worker}}"
+
+- name: join worker nodes
+  community.docker.docker_swarm:
+    remote_addrs: "{{groups['managers'][0]}}"
+    join_token: "{{tokens.manager}}"
+    state: join
+  when: 
+    - inventory_hostname != groups['managers'][0]
+    - inventory_hostname in groups['managers']
+
+- name: join worker nodes
+  community.docker.docker_swarm:
+    remote_addrs: "{{groups['managers'][0]}}"
+    join_token: "{{tokens.worker}}"
+    state: join
+  when: 
+    - inventory_hostname in groups['workers']

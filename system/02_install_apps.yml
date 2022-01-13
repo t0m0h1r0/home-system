@@ -2,6 +2,7 @@
   template:
     src: "02_proxy.j2"
     dest: "/etc/apt/apt.conf.d/01proxy"
+  when: inventory_hostname not in groups['registry']
 
 - name: update
   apt:

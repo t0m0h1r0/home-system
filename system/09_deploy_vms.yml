@@ -1,0 +1,30 @@
+- name: install lxd
+  snap:
+    name: lxd
+
+- name: create profile
+  community.general.lxd_profile:
+    name: bridge
+    state: present
+    config: {}
+    devices:
+      eth0:
+        nictype: bridged
+        parent: br0
+        type: nic
+
+- name: deploy VMs
+  community.general.lxd_container:
+    name: "{{item}}"
+    type: virtual-machine
+    ignore_volatile_options: true
+    state: started
+    source:
+      type: image
+      moode: pull
+      alias: ubuntu/20.04
+      server: https://images.linuxcontainers.org
+      protocol: simplestreams
+    profiles: ["default","bridge"]
+    wait_for_ipv4_addresses: true
+  loop: "{{groups['vms']}}"
