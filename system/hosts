@@ -1,20 +1,20 @@
+[servers]
+nuc1 ansible_connection=ssh
+
+[vms]
+reg1 ansible_connection=lxd ansible_host=nuc1:reg1
+chia1 ansible_connection=lxd ansible_host=nuc1:chia1
+
+[registry]
+reg1 ansible_connection=lxd ansible_host=nuc1:reg1
+
 [managers]
 nuc1 ansible_connection=ssh
 nuc2 ansible_connection=ssh
 nuc3 ansible_connection=ssh
 
 [workers]
-chia1 ansible_connection=lxd
-
-[registry]
-reg1 ansible_connection=lxd
+chia1 ansible_connection=lxd ansible_host=nuc1:chia1
 
 [iscsi]
 syn1
-
-[nucs]
-nuc1 ansible_connection=ssh
-
-[vms]
-reg1
-chia1

@@ -6,7 +6,7 @@
       - 5000:5000
     state: started
     restart_policy: always
-- name: start apt prooxy
+- name: start apt proxy
   community.docker.docker_container:
     name: apt-cacher
     image: sameersbn/apt-cacher-ng:latest

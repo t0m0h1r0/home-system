@@ -11,12 +11,12 @@
 - name: upgrade
   apt:
     upgrade: full
-- name: install apt librarries
+- name: install apt apps
   apt:
     name: "{{item}}"
   loop: "{{apt_apps if apt_apps is iterable else []}}"
 
-- name: install snap librarries
+- name: install snap apps
   snap:
     name: "{{item}}"
   loop: "{{snap_apps if snap_apps is iterable else []}}"
