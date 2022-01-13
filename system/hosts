@@ -1,9 +1,14 @@
 [managers]
-nuc1 ansible_connection=ssh
-
-[workers]
 vm1 ansible_connection=lxd
 vm2 ansible_connection=lxd
+vm3 ansible_connection=lxd
+
+[workers]
+vm4 ansible_connection=lxd
+vm5 ansible_connection=lxd
 
 [registry]
 reg1
+
+[proxy]
+omv1

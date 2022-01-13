@@ -1,9 +1,17 @@
 - name: create /etc/docker/daemon.json
-  template:
+  file:
+    path: /etc/docker
+    state: directory
+- template:
     src: "06_daemon.json.j2"
     dest: "/etc/docker/daemon.json"
-  notify:
-    - restart Docker
+
+- name: restart Docker daemon
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+
 
 - name: create PVs 
   community.docker.docker_volume:
@@ -13,6 +21,17 @@
       o: bind
       device: "{{item.dir}}"
   loop: "{{pvs}}"
+
+- name: init swarm
+  community.docker.docker_swarm:
+    state: present
+  register: result
+  when: 
+    - inventory_hostname == groups['managers'][0]
+- set_fact:
+    tokens:
+      manager: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Manager}}"
+      worker: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Worker}}"
 
 - name: join worker nodes
   community.docker.docker_swarm:
