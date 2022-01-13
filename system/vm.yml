@@ -1,12 +1,16 @@
-- hosts: nucs
+- hosts: servers
+  become: yes
   vars:
     eth_dev: eno1
   tasks:
     - import_tasks: 01_config_network.yml
-    - import_tasks: 09_deploy_vms.yml 
-      when: inventory_hostname == groups['nucs'][0]
   handlers:
     - import_tasks: 01_apply_config.yml
+
+- hosts: servers[0]
+  tasks:
+    - import_tasks: 09_deploy_vms.yml 
+      when: inventory_hostname == groups['servers'][0]
 
 - hosts: registry
   become: yes

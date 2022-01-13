@@ -1,12 +1,18 @@
 - name: install lxd
+  become: yes
   snap:
     name: lxd
+  register: result
+- when: result.changed
+  shell: lxd init --auto
 
 - name: create profile
   community.general.lxd_profile:
     name: bridge
     state: present
-    config: {}
+    config:
+      limits.cpu: "1"
+      limits.memory: "2GiB"
     devices:
       eth0:
         nictype: bridged

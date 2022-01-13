@@ -1,5 +1,5 @@
-[nucs]
-nuc1 ansible_connection=local
+[servers]
+test ansible_connection=ssh ansible_user=kodi
 
 [vms]
 vm0 ansible_connection=lxd
