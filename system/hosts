@@ -1,0 +1,9 @@
+[managers]
+nuc1 ansible_connection=ssh
+
+[workers]
+vm1 ansible_connection=lxd
+vm2 ansible_connection=lxd
+
+[registry]
+reg1

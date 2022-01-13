@@ -1,0 +1,2 @@
+- name: apply system update
+  reboot:

@@ -1,0 +1,30 @@
+- hosts: workers
+  become: yes
+  vars:
+    eth_dev: eno1
+    apt_apps:
+      - docker.io
+      - docker-compose
+      - python3-docker
+      - ansible
+      - cockpit
+      - cockpit-pcp
+    snap_apps:
+    pvs:
+      - { "name": "chia_plots", "dir": "{{mount_point}}/chia/plots" }
+      - { "name": "docker_dir", "dir": "/var/lib/docker" }
+    tokens:
+      worker: SWMTKN-1-0v7y5nww1xnsjbp57dhgo4jkg0otmmowi3wp5fht5e6fyfxp47-d9gvcwkabp1h1sw5p51j735ec
+      manager: SWMTKN-1-0v7y5nww1xnsjbp57dhgo4jkg0otmmowi3wp5fht5e6fyfxp47-1mmmsuzv7y4dzgm6n20swl0rw
+    iscsi_target: syn1
+    iscsi_iqn: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
+    iscsi_uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
+    mount_point: /mnt/iscsi
+  tasks:
+    - import_tasks: 01_config_network.yml
+    - import_tasks: 02_install_apps.yml
+    - import_tasks: 05_config_iscsi.yml
+    - import_tasks: 06_config_docker.yml
+  handlers:
+    - import_tasks: 01_apply_config.yml
+    - import_tasks: 06_apply_docker.yml

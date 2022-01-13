@@ -1,0 +1,20 @@
+
+  handlers:
+    - name: restart Docker
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+
+    - name: set node labels
+      delegate_to: "{{groups['master'][0]}}"
+      community.docker.docker_node:
+        hostname: "{{inventory_hostname}}"
+        labels:
+          database: "true"
+          storage: "false"
+          compute: "false"
+          grafana: "true"
+          ldap: "true"
+          portainer: "true"
+        labels_state: merge

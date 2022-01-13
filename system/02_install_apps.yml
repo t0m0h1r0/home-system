@@ -1,0 +1,23 @@
+- name: set apt-cache
+  template:
+    src: "02_proxy.j2"
+    dest: "/etc/apt/apt.conf.d/01proxy"
+
+- name: update
+  apt:
+    upgrade: full
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+- name: upgrade
+  apt:
+    cache_valid_time: 86400 #One day
+- name: install apt librarries
+  apt:
+    name: "{{item}}"
+  loop: "{{apt_apps if snap_apps is iterable else []}}"
+
+- name: install snap librarries
+  snap:
+    name: "{{item}}"
+  loop: "{{snap_apps if snap_apps is iterable else []}}"
+

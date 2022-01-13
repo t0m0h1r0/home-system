@@ -1,0 +1,28 @@
+- name: restart iSCSI
+  service:
+    name: iscsid
+    state: started
+    enabled: yes
+
+- name: login iSCSI target
+  community.general.open_iscsi:
+    portal: "{{iscsi_target}}"
+    target: "{{iscsi_iqn}}"
+    discover: yes
+    login: yes
+    auto_node_startup: true
+
+- name: make mount point
+  file:
+    path: "{{mount_point}}"
+    state: directory
+
+- name: mount iSCSI target
+  mount:
+    name: "{{mount_point}}"
+    src: "UUID={{iscsi_uuid}}"
+    fstype: xfs,ro
+    opts: _netdev
+    state: mounted
+
+
