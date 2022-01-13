@@ -1,26 +1,25 @@
 [servers]
-test ansible_connection=ssh ansible_user=kodi
+nuc1 ansible_connection=ssh ansible_user=tomohiro
 
 [vms]
-vm0 ansible_connection=lxd
-vm1 ansible_connection=lxd
-vm2 ansible_connection=lxd
-vm3 ansible_connection=lxd
-vm4 ansible_connection=lxd
-
-[managers]
-vm1
-vm2
-vm3
-
-[workers]
-vm4
-vm5
+vm0 ansible_connection=lxd ansible_host=nuc1:vm0
+vm1 ansible_connection=lxd ansible_host=nuc1:vm1
+vm2 ansible_connection=lxd ansible_host=nuc1:vm2
+vm3 ansible_connection=lxd ansible_host=nuc1:vm3
+vm4 ansible_connection=lxd ansible_host=nuc1:vm4
+vm5 ansible_connection=lxd ansible_host=nuc1:vm5
 
 [registry]
-vm0
+vm0 ansible_connection=lxd ansible_host=nuc1:vm0
+
+[managers]
+vm1 ansible_connection=lxd ansible_host=nuc1:vm1
+vm2 ansible_connection=lxd ansible_host=nuc1:vm2
+vm3 ansible_connection=lxd ansible_host=nuc1:vm3
+
+[workers]
+vm4 ansible_connection=lxd ansible_host=nuc1:vm4
+vm5 ansible_connection=lxd ansible_host=nuc1:vm5
 
 [iscsi]
 syn1
-
-

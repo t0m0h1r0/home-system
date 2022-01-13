@@ -20,6 +20,8 @@
       - docker-compose
       - python3-docker
     snap_apps:
+    pvs:
+      - { "name": "docker_dir", "dir": "/var/lib/docker" }
   tasks:
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
@@ -34,8 +36,7 @@
       - docker-compose
       - python3-docker
       - ansible
-      - cockpit
-      - cockpit-pcp
+      - open-iscsi
     snap_apps:
     pvs:
       - { "name": "chia_plots", "dir": "{{mount_point}}/chia/plots" }
