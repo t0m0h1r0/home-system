@@ -12,3 +12,6 @@ reg1
 
 [proxy]
 omv1
+
+[iscsi]
+syn1

@@ -1,5 +1,3 @@
-- set_fact:
-    apt_proxy: "{{groups['proxy'][0]}}"
 - name: set apt-cache
   template:
     src: "02_proxy.j2"
