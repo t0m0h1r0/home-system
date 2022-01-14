@@ -34,3 +34,4 @@
     profiles: ["default","bridge"]
     wait_for_ipv4_addresses: true
   loop: "{{groups['vms']}}"
+  when: hostvars[item].parent == inventory_hostname
