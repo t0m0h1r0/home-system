@@ -21,8 +21,8 @@
   mount:
     name: "{{mount_point}}"
     src: "UUID={{iscsi_uuid}}"
-    fstype: xfs,ro
-    opts: _netdev
+    fstype: xfs
+    opts: _netdev,ro
     state: mounted
 
 
