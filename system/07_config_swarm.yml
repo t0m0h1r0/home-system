@@ -9,7 +9,7 @@
       manager: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Manager}}"
       worker: "{{hostvars[groups['managers'][0]].result.swarm_facts.JoinTokens.Worker}}"
 
-- name: join worker nodes
+- name: join manager nodes
   community.docker.docker_swarm:
     remote_addrs: "{{groups['managers'][0]}}"
     join_token: "{{tokens.manager}}"
@@ -26,11 +26,13 @@
   when: 
     - inventory_hostname in groups['workers']
 
-
 - name: set node labels
   delegate_to: "{{groups['managers'][0]}}"
   community.docker.docker_node:
     hostname: "{{inventory_hostname}}"
-    labels: "{{labels[item]}}"
+    labels: "{{item.value}}"
     labels_state: merge
-  loop: "{{labels.keys()}}"
+  loop: "{{labels|dict2items}}"
+  when:
+    - item.key in groups
+    - inventory_hostname in groups[item.key]

@@ -38,7 +38,7 @@
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
 
-- hosts: workers
+- hosts: storages
   become: yes
   vars:
     mount_point: /mnt/iscsi
@@ -49,7 +49,7 @@
       - portal: readynas
         target: iqn.1994-11.com.netgear:readynas:b6aca745:group1
         uuid: be26ee1b-c979-4e5b-9cc8-7cef967195a7
-    iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
+    iscsi: "{{dict(ansible_play_batch|zip_longest(iscsi_list,fillvalue=iscsi_list[0]))}}"
   tasks:
     - import_tasks: 05_config_iscsi.yml
 
