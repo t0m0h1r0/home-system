@@ -1,0 +1,9 @@
+- hosts: servers
+  become: yes
+  vars:
+    nic: "{{hostvars[inventory_hostname].nic}}"
+  tasks:
+    - import_tasks: 01_config_network.yml
+  handlers:
+    - import_tasks: 01_apply_config.yml
+

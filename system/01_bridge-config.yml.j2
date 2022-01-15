@@ -1,13 +1,13 @@
 network:
   ethernets:
-    {{eth_dev}}:
+    {{nic}}:
       dhcp4: no
   bridges:
     br0:
       dhcp4: yes
       mtu: 9000
       interfaces:
-        - {{eth_dev}}
+        - {{nic}}
       parameters:
-        forward-delay: 1
+        stp: no
   version: 2
