@@ -10,7 +10,6 @@
 - hosts: servers
   tasks:
     - import_tasks: 09_deploy_vms.yml 
-
 - hosts: registry
   become: yes
   vars:
@@ -34,18 +33,39 @@
       - docker.io
       - docker-compose
       - python3-docker
-      - ansible
-      - open-iscsi
     snap_apps:
-    pvs:
-      - { "name": "chia_plots", "dir": "{{mount_point}}/chia/plots" }
-      - { "name": "docker_dir", "dir": "/var/lib/docker" }
-    iscsi_target: "{{groups['iscsi'][0]}}"
-    iscsi_iqn: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
-    iscsi_uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
-    mount_point: /mnt/iscsi
   tasks:
     - import_tasks: 02_install_apps.yml
-    - import_tasks: 05_config_iscsi.yml
     - import_tasks: 06_config_docker.yml
+
+- hosts: workers
+  become: yes
+  vars:
+    mount_point: /mnt/iscsi
+    iscsi_list:
+      - portal: syn1
+        target: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
+        uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
+      - portal: readynas
+        target: iqn.1994-11.com.netgear:readynas:b6aca745:group1
+        uuid: be26ee1b-c979-4e5b-9cc8-7cef967195a7
+    iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
+    mount_point: /mnt/iscsi
+  tasks:
+    - import_tasks: 05_config_iscsi.yml
+
+- hosts: workers managers
+  become: yes
+  vars:
+    labels:
+      managers:
+        database: "true"
+        grafana: "true"
+        ldap: "true"
+        portainer: "true"
+      storages:
+        storage: "true"
+      computes:
+        compute: "true"
+  tasks:
     - import_tasks: 07_config_swarm.yml

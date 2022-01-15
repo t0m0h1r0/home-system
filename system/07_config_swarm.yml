@@ -31,11 +31,6 @@
   delegate_to: "{{groups['managers'][0]}}"
   community.docker.docker_node:
     hostname: "{{inventory_hostname}}"
-    labels:
-      database: "false"
-      storage: "false"
-      compute: "false"
-      grafana: "false"
-      ldap: "false"
-      portainer: "false"
-    labels_state: replace
+    labels: "{{labels[item]}}"
+    labels_state: merge
+  loop: {{labels.keys()}}

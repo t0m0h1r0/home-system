@@ -12,7 +12,6 @@
     state: restarted
     enabled: yes
 
-
 - name: create PVs 
   community.docker.docker_volume:
     name: "{{item.name}}"
@@ -20,5 +19,5 @@
       type: none
       o: bind
       device: "{{item.dir}}"
-  loop: "{{pvs}}"
-
+  loop:
+      - { "name": "docker_dir", "dir": "/var/lib/docker" }

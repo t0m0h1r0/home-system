@@ -1,13 +1,15 @@
 [servers]
 nuc1 ansible_connection=ssh nic=eno1
+nuc2 ansible_connection=ssh nic=eno1
 
 [vms]
-vm0 ansible_connection=lxd ansible_host=nuc1:vm0 parent=nuc1
-vm1 ansible_connection=lxd ansible_host=nuc1:vm1 parent=nuc1
-vm2 ansible_connection=lxd ansible_host=nuc1:vm2 parent=nuc1
-vm3 ansible_connection=lxd ansible_host=nuc1:vm3 parent=nuc1
-vm4 ansible_connection=lxd ansible_host=nuc1:vm4 parent=nuc1
-vm5 ansible_connection=lxd ansible_host=nuc1:vm5 parent=nuc1
+vm0 ansible_connection=lxd ansible_host=nuc1:vm0
+vm1 ansible_connection=lxd ansible_host=nuc2:vm1
+vm2 ansible_connection=lxd ansible_host=nuc1:vm2
+vm3 ansible_connection=lxd ansible_host=nuc2:vm3
+vm4 ansible_connection=lxd ansible_host=nuc1:vm4
+vm5 ansible_connection=lxd ansible_host=nuc2:vm5
+vm6 ansible_connection=lxd ansible_host=nuc1:vm6
 
 [registry]
 vm0
@@ -20,6 +22,8 @@ vm3
 [workers]
 vm4
 vm5
+vm6
 
-[iscsi]
-syn1
+[storage]
+vm4
+vm5

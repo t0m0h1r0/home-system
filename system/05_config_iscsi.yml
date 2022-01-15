@@ -1,3 +1,8 @@
+- name: install apt apps
+  apt:
+    name: open-iscsi
+  registry: result
+
 - name: restart iSCSI
   service:
     name: iscsid
@@ -6,8 +11,8 @@
 
 - name: login iSCSI target
   community.general.open_iscsi:
-    portal: "{{iscsi_target}}"
-    target: "{{iscsi_iqn}}"
+    portal: "{{iscsi[inventory_hostname].portal}}"
+    target: "{{iscsi[inventory_hostname].target}}"
     discover: yes
     login: yes
     auto_node_startup: true
@@ -20,9 +25,17 @@
 - name: mount iSCSI target
   mount:
     name: "{{mount_point}}"
-    src: "UUID={{iscsi_uuid}}"
+    src: "UUID={{iscsi[inventory_hostname].uuid}}"
     fstype: xfs
     opts: _netdev,ro
     state: mounted
 
-
+- name: create PVs 
+  community.docker.docker_volume:
+    name: "{{item.name}}"
+    driver_options:
+      type: none
+      o: bind
+      device: "{{item.dir}}"
+  loop:
+      - { "name": "chia_plots", "dir": "{{mount_point}}/chia/plots" }
