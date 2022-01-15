@@ -25,3 +25,17 @@
     state: join
   when: 
     - inventory_hostname in groups['workers']
+
+
+- name: set node labels
+  delegate_to: "{{groups['managers'][0]}}"
+  community.docker.docker_node:
+    hostname: "{{inventory_hostname}}"
+    labels:
+      database: "false"
+      storage: "false"
+      compute: "false"
+      grafana: "false"
+      ldap: "false"
+      portainer: "false"
+    labels_state: replace

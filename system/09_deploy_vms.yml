@@ -43,3 +43,4 @@
   loop: "{{groups['vms']}}"
   when:
     - hostvars[item].ansible_host is match('^'+inventory_hostname+':'+item+'$')
+
