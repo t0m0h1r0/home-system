@@ -1,0 +1,25 @@
+[servers]
+nuc1 ansible_connection=ssh
+
+[vms]
+vm0 ansible_connection=lxd ansible_host=nuc1:vm0 parent=nuc1
+vm1 ansible_connection=lxd ansible_host=nuc1:vm1 parent=nuc1
+vm2 ansible_connection=lxd ansible_host=nuc1:vm2 parent=nuc1
+vm3 ansible_connection=lxd ansible_host=nuc1:vm3 parent=nuc1
+vm4 ansible_connection=lxd ansible_host=nuc1:vm4 parent=nuc1
+vm5 ansible_connection=lxd ansible_host=nuc1:vm5 parent=nuc1
+
+[registry]
+vm0
+
+[managers]
+vm1
+vm2
+vm3
+
+[workers]
+vm4
+vm5
+
+[iscsi]
+syn1

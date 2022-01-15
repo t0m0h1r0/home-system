@@ -5,6 +5,9 @@ network:
   bridges:
     br0:
       dhcp4: yes
+      mtu: 9000
       interfaces:
         - {{eth_dev}}
+      parameters:
+        forward-delay: 1
   version: 2
