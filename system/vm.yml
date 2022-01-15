@@ -7,10 +7,9 @@
   handlers:
     - import_tasks: 01_apply_config.yml
 
-- hosts: servers[0]
+- hosts: servers
   tasks:
     - import_tasks: 09_deploy_vms.yml 
-      when: inventory_hostname == groups['servers'][0]
 
 - hosts: registry
   become: yes

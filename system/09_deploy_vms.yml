@@ -19,6 +19,7 @@
         parent: br0
         type: nic
 
+- debug: msg="{{hostvars}}"
 - name: deploy VMs
   community.general.lxd_container:
     name: "{{item}}"
@@ -34,4 +35,5 @@
     profiles: ["default","bridge"]
     wait_for_ipv4_addresses: true
   loop: "{{groups['vms']}}"
-  when: hostvars[item].parent == inventory_hostname
+  when:
+    - hostvars[item].ansible_host is match('^'+inventory_hostname+':'+item+'$')

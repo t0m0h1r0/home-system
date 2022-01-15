@@ -1,9 +1,11 @@
 [servers]
-nuc1 ansible_connection=ssh
+nuc1 ansible_connection=ssh nic=eno1
+nuc2 ansible_connection=ssh nic=eno1
 
 [vms]
 reg1 ansible_connection=lxd ansible_host=nuc1:reg1
-chia1 ansible_connection=lxd ansible_host=nuc1:chia1
+#chia1 ansible_connection=lxd ansible_host=nuc1:chia1
+chia2 ansible_connection=lxd ansible_host=nuc2:chia2
 
 [registry]
 reg1 ansible_connection=lxd ansible_host=nuc1:reg1
@@ -11,7 +13,7 @@ reg1 ansible_connection=lxd ansible_host=nuc1:reg1
 [managers]
 nuc1 ansible_connection=ssh
 nuc2 ansible_connection=ssh
-nuc3 ansible_connection=ssh
+#nuc3 ansible_connection=ssh
 
 [workers]
 chia1 ansible_connection=lxd ansible_host=nuc1:chia1
