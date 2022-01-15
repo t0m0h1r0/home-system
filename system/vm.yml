@@ -50,7 +50,6 @@
         target: iqn.1994-11.com.netgear:readynas:b6aca745:group1
         uuid: be26ee1b-c979-4e5b-9cc8-7cef967195a7
     iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
-    mount_point: /mnt/iscsi
   tasks:
     - import_tasks: 05_config_iscsi.yml
 

@@ -33,4 +33,4 @@
     hostname: "{{inventory_hostname}}"
     labels: "{{labels[item]}}"
     labels_state: merge
-  loop: {{labels.keys()}}
+  loop: "{{labels.keys()}}"

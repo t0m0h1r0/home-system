@@ -1,7 +1,7 @@
 - name: install apt apps
   apt:
     name: open-iscsi
-  registry: result
+  register: result
 
 - name: restart iSCSI
   service:
