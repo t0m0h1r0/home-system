@@ -4,7 +4,6 @@
 #   sshでログイン
 #   python3をインストール(opkg install pythoon3 python3-pip)
 #   dockerライブラリをインストール(pip install docker)
-- debug: msg="{{drive}}"
 - name: create PVs 
   community.docker.docker_volume:
     name: "{{item.name}}"

@@ -10,6 +10,11 @@ reg1 ansible_connection=lxd ansible_host=nuc1:reg1
 chia1 ansible_connection=lxd ansible_host=nuc2:chia1
 chia2 ansible_connection=lxd ansible_host=nuc3:chia2
 
+[nas]
+qnap1 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+qnap2 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+omv1 ansible_connection=ssh ansible_user=root vendor=omv
+
 
 #役割
 [registry]
@@ -18,11 +23,6 @@ reg1
 [iscsi]
 chia1
 chia2
-
-[nas]
-qnap1 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
-qnap2 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
-omv1 ansible_connection=ssh ansible_user=root vendor=omv
 
 
 [database]
