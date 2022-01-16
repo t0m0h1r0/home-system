@@ -62,9 +62,10 @@
         dir: /share/chia/plots/
       omv:
         dir: /srv/mergerfs/x/chia/plots/
-    pv_name: test
+    pv_name: chia_plots
     drive: "{{nas[hostvars[inventory_hostname].vendor]}}"
   tasks:
+    - import_tasks: 06_config_docker.yml
     - import_tasks: 15_config_nas.yml
 
 - hosts: workers managers
