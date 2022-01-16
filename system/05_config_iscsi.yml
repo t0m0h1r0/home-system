@@ -38,4 +38,4 @@
       o: bind
       device: "{{item.dir}}"
   loop:
-      - { "name": "chia_plots", "dir": "{{mount_point}}/chia/plots" }
+      - { "name": "{{pv_name}}", "dir": "{{mount_point}}/chia/plots" }

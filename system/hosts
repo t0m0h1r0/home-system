@@ -1,4 +1,4 @@
-#物理サーバか、仮想マシンか
+#物理サーバ、仮想マシン設定
 [servers]
 nuc1 ansible_connection=ssh nic=eno1
 nuc2 ansible_connection=ssh nic=eno1
@@ -15,15 +15,21 @@ chia2 ansible_connection=lxd ansible_host=nuc3:chia2
 [registry]
 reg1
 
-[storages]
+[iscsi]
 chia1
 chia2
 
-[databases]
+[nas]
+qnap1 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+qnap2 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+omv1 ansible_connection=ssh ansible_user=root vendor=omv
+
+
+[database]
 nuc1
 nuc2
 
-[computes]
+[compute]
 aorus
 
 
@@ -36,4 +42,6 @@ nuc3
 [workers]
 chia1
 chia2
-
+qnap1
+qnap1
+omv1
