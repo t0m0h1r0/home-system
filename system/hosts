@@ -2,6 +2,7 @@
 [servers]
 nuc1 ansible_connection=ssh nic=eno1
 nuc2 ansible_connection=ssh nic=eno1
+aorus ansible_connection=ssh nic=enp6s0
 
 [vms]
 reg1 ansible_connection=lxd ansible_host=nuc1:reg1
@@ -16,6 +17,13 @@ reg1
 [storages]
 chia1
 chia2
+
+[databases]
+nuc1
+nuc2
+
+[computes]
+aorus
 
 
 #Swarmの構成

@@ -10,6 +10,7 @@
 - hosts: servers
   tasks:
     - import_tasks: 09_deploy_vms.yml 
+
 - hosts: registry
   become: yes
   vars:
@@ -58,13 +59,14 @@
   vars:
     labels:
       managers:
-        database: "true"
-        grafana: "true"
         ldap: "true"
         portainer: "true"
       storages:
         storage: "true"
       computes:
         compute: "true"
+      databases:
+        database: "true"
+        grafana: "true"
   tasks:
     - import_tasks: 07_config_swarm.yml
