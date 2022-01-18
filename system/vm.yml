@@ -8,6 +8,7 @@
     - import_tasks: 01_apply_config.yml
 
 - hosts: servers
+  serial: 1
   tasks:
     - import_tasks: 09_deploy_vms.yml 
 
@@ -26,7 +27,7 @@
     - import_tasks: 06_config_docker.yml
     - import_tasks: 08_config_registry.yml
 
-- hosts: workers managers
+- hosts: servers vms
   become: yes
   vars:
     apt_proxy: "{{groups['registry'][0]}}"
@@ -48,14 +49,12 @@
       - portal: syn1
         target: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
         uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
-      - portal: readynas
-        target: iqn.1994-11.com.netgear:readynas:b6aca745:group1
-        uuid: be26ee1b-c979-4e5b-9cc8-7cef967195a7
     iscsi: "{{dict(ansible_play_batch|zip_longest(iscsi_list,fillvalue=iscsi_list[0]))}}"
   tasks:
     - import_tasks: 05_config_iscsi.yml
 
 - hosts: nas
+  become: yes
   vars:
     nas:
       qnap:

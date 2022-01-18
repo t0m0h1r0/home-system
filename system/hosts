@@ -2,17 +2,15 @@
 [servers]
 nuc1 ansible_connection=ssh nic=eno1
 nuc2 ansible_connection=ssh nic=eno1
-nuc3 ansible_connection=ssh nic=eno1
 aorus ansible_connection=ssh nic=enp6s0
 
 [vms]
 reg1 ansible_connection=lxd ansible_host=nuc1:reg1
 chia1 ansible_connection=lxd ansible_host=nuc2:chia1
-chia2 ansible_connection=lxd ansible_host=nuc3:chia2
 
 [nas]
-qnap1 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
-qnap2 ansible_connection=ssh ansible_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+qnap1 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+qnap2 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
 omv1 ansible_connection=ssh ansible_user=root vendor=omv
 
 
@@ -22,7 +20,6 @@ reg1
 
 [iscsi]
 chia1
-chia2
 
 
 [database]
@@ -35,13 +32,11 @@ aorus
 
 #Swarmの構成
 [managers]
-nuc1
 nuc2
-nuc3
 
 [workers]
+nuc1
 chia1
-chia2
-qnap1
-qnap1
 omv1
+qnap1
+qnap2
