@@ -5,8 +5,9 @@
   register: result
 - when: result.changed
   shell: "{{item}}"
-  loop:
     - 'lxd init --auto'
+- shell: "{{item}}"
+  loop:
     - 'lxc config set core.https_address "[::]"'
     - 'lxc config set core.trust_password xyz'
 - when: result.changed
