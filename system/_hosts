@@ -1,0 +1,40 @@
+#物理サーバ、仮想マシン設定
+[servers]
+nuc1 ansible_connection=ssh nic=eno1
+
+[vms]
+reg1 ansible_connection=lxd ansible_host=nuc1:reg1
+chia1 ansible_connection=lxd ansible_host=nuc2:chia1
+
+[nas]
+qnap1 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+qnap2 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
+omv1 ansible_connection=ssh ansible_user=root vendor=omv
+
+
+#役割
+[registry]
+reg1
+
+[iscsi]
+chia1
+
+
+[database]
+nuc1
+nuc2
+
+[compute]
+aorus
+
+
+#Swarmの構成
+[managers]
+nuc2
+
+[workers]
+nuc1
+chia1
+omv1
+qnap1
+qnap2

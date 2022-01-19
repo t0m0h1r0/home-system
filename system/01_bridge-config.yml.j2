@@ -1,11 +1,13 @@
 network:
   ethernets:
     {{nic}}:
+      macaddress: {{mac}}
       dhcp4: no
   bridges:
     br0:
       dhcp4: yes
       mtu: 9000
+      macaddress: {{mac}}
       interfaces:
         - {{nic}}
       parameters:
