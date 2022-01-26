@@ -2,6 +2,7 @@
 [servers]
 nuc1 ansible_connection=ssh nic=eno1
 nuc2 ansible_connection=ssh nic=eno1
+nuc3 ansible_connection=ssh nic=eno1
 aorus ansible_connection=ssh nic=enp6s0
 
 [vms]
@@ -32,10 +33,12 @@ aorus
 
 #Swarmの構成
 [managers]
+nuc1
 nuc2
+nuc3
 
 [workers]
-nuc1
+aorus
 chia1
 omv1
 qnap1

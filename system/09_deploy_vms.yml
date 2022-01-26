@@ -5,6 +5,7 @@
   register: result
 - when: result.changed
   shell: "{{item}}"
+  loop:
     - 'lxd init --auto'
 - shell: "{{item}}"
   loop:
