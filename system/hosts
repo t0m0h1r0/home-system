@@ -26,6 +26,7 @@ chia1
 [database]
 nuc1
 nuc2
+nuc3
 
 [compute]
 aorus

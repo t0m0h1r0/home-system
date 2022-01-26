@@ -75,7 +75,6 @@
     labels:
       managers:
         ldap: "true"
-        portainer: "true"
       iscsi:
         storage: "true"
       nas:
@@ -87,3 +86,4 @@
         grafana: "true"
   tasks:
     - import_tasks: 07_config_swarm.yml
+
