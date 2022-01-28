@@ -12,7 +12,7 @@ chia1 ansible_connection=lxd ansible_host=nuc2:chia1
 [nas]
 qnap1 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
 qnap2 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
-omv1 ansible_connection=ssh ansible_user=root vendor=omv
+omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
 
 
 #役割
