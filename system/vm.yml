@@ -38,6 +38,7 @@
       - docker.io
       - docker-compose
       - python3-docker
+      - nfs-common
     snap_apps:
   tasks:
     - import_tasks: 02_install_apps.yml
