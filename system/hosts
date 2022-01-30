@@ -7,7 +7,7 @@ aorus ansible_connection=ssh nic=enp6s0
 
 [vms]
 reg1 ansible_connection=lxd ansible_host=nuc1:reg1
-chia1 ansible_connection=lxd ansible_host=nuc2:chia1
+chia1 ansible_connection=lxd ansible_host=nuc1:chia1
 
 [nas]
 qnap1 ansible_connection=ssh ansible_user=admin ansible_become_user=admin ansible_python_interpreter=/opt/bin/python3 vendor=qnap
