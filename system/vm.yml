@@ -52,9 +52,6 @@
     mount_point: /mnt/iscsi
     pv_name: chia_plots
     iscsi_list:
-      - portal: syn1
-        target: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
-        uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
       - portal: syn2
         target: iqn.2000-01.com.synology:syn2.Target-1.4007cab6d73
         uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
