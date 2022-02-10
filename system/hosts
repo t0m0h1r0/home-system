@@ -22,6 +22,7 @@ reg1
 
 [iscsi]
 chia1
+chia2
 
 
 [database]
@@ -42,6 +43,6 @@ nuc3
 [workers]
 aorus
 chia1
+chia2
 omv1
 qnap1
-qnap2

@@ -1,3 +1,6 @@
+- name: debug-iscsi
+  debug: msg="{{iscsi}}"
+
 - name: install apt apps
   apt:
     name: open-iscsi
@@ -8,6 +11,7 @@
     name: iscsid
     state: started
     enabled: yes
+
 
 - name: login iSCSI target
   community.general.open_iscsi:
