@@ -1,6 +1,3 @@
-- name: debug-iscsi
-  debug: msg="{{iscsi}}"
-
 - name: install apt apps
   apt:
     name: open-iscsi
