@@ -10,6 +10,8 @@ reg1 ansible_connection=lxd ansible_host=nuc1:reg1
 chia1 ansible_connection=lxd ansible_host=nuc1:chia1
 chia2 ansible_connection=lxd ansible_host=nuc1:chia2
 chia3 ansible_connection=lxd ansible_host=nuc1:chia3
+chia4 ansible_connection=lxd ansible_host=nuc1:chia4
+chia4 ansible_connection=lxd ansible_host=nuc2:chia5
 
 [nas]
 omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
@@ -23,6 +25,8 @@ reg1
 chia1
 chia2
 chia3
+chia4
+chia5
 
 
 [database]
@@ -42,7 +46,9 @@ nuc3
 
 [workers]
 aorus
+omv1
 chia1
 chia2
 chia3
-omv1
+chia4
+chia5
