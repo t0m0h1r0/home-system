@@ -7,7 +7,8 @@
   shell: "{{item}}"
   loop:
     - 'lxd init --auto'
-- shell: "{{item}}"
+- when: result.changed
+  shell: "{{item}}"
   loop:
     - 'lxc config set core.https_address "[::]"'
     - 'lxc config set core.trust_password xyz'
@@ -34,6 +35,12 @@
     type: virtual-machine
     ignore_volatile_options: true
     state: started
+    devices:
+      root:
+        path: /
+        pool: default
+        size: "20GB"
+        type: disk
     source:
       type: image
       moode: pull

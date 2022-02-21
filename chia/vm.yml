@@ -11,7 +11,7 @@
     - import_tasks: 01_apply_config.yml
 
 - hosts: servers
-  serial: 1
+  #serial: 1
   tasks:
     - import_tasks: 09_deploy_vms.yml 
 
