@@ -44,7 +44,7 @@
     source:
       type: image
       moode: pull
-      alias: ubuntu/20.04
+      alias: ubuntu/22.04
       server: https://images.linuxcontainers.org
       protocol: simplestreams
     profiles: ["default","bridge"]
