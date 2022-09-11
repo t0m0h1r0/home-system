@@ -34,6 +34,7 @@
     name: "{{item}}"
     type: virtual-machine
     ignore_volatile_options: true
+    wait_for_ipv4_addresses: true
     state: started
     devices:
       root:
@@ -44,11 +45,10 @@
     source:
       type: image
       moode: pull
-      alias: ubuntu/22.04
+      alias: ubuntu/jammy
       server: https://images.linuxcontainers.org
       protocol: simplestreams
     profiles: ["default","bridge"]
-    wait_for_ipv4_addresses: true
   loop: "{{groups['vms']}}"
   when:
     - hostvars[item].ansible_host is match('^'+inventory_hostname+':'+item+'$')
