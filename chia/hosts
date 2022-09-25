@@ -24,8 +24,6 @@ chia-h4
 
 [database]
 chia-m1
-#nuc2
-#nuc3
 
 [compute]
 aorus
@@ -34,8 +32,6 @@ aorus
 #Swarmの構成
 [managers]
 chia-m1
-#nuc2
-#nuc3
 
 [workers]
 chia-h1

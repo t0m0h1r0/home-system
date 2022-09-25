@@ -28,7 +28,7 @@
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
 
-- hosts: managers
+- hosts: database
   become: yes
   vars:
     mount_point: /mnt/chia
