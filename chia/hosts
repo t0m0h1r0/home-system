@@ -1,17 +1,11 @@
 #物理サーバ、仮想マシン設定
 [servers]
-nuc1 ansible_connection=ssh nic=eno1
-#nuc2 ansible_connection=ssh nic=eno1
-#nuc3 ansible_connection=ssh nic=eno1
-aorus ansible_connection=ssh nic=enp6s0
-
-[vms]
-reg1 ansible_connection=lxd ansible_host=nuc1:reg1
-chia1 ansible_connection=lxd ansible_host=nuc1:chia1
-chia2 ansible_connection=lxd ansible_host=nuc1:chia2
-chia3 ansible_connection=lxd ansible_host=nuc1:chia3
-chia4 ansible_connection=lxd ansible_host=nuc1:chia4
-#chia5 ansible_connection=lxd ansible_host=nuc1:chia5
+cache
+chia-m1
+chia-h1
+chia-h2
+chia-h3
+chia-h4
 
 [nas]
 omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
@@ -19,18 +13,17 @@ omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bi
 
 #役割
 [registry]
-reg1
+cache
 
 [iscsi]
-chia1
-chia2
-chia3
-chia4
-#chia5
+chia-h1
+chia-h2
+chia-h3
+chia-h4
 
 
 [database]
-nuc1
+chia-m1
 #nuc2
 #nuc3
 
@@ -40,15 +33,13 @@ aorus
 
 #Swarmの構成
 [managers]
-nuc1
+chia-m1
 #nuc2
 #nuc3
 
 [workers]
-aorus
+chia-h1
+chia-h2
+chia-h3
+chia-h4
 omv1
-chia1
-chia2
-chia3
-chia4
-#chia5
