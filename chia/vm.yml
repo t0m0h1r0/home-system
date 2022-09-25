@@ -28,6 +28,17 @@
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
 
+- hosts: managers
+  become: yes
+  vars:
+    mount_point: /mnt/chia
+    pv_name: chia_plots
+    iscsi_list:
+      - uuid: 50d74254-1324-4711-9e66-77be854a3de1
+    iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
+  tasks:
+    - import_tasks: 11_config_mnt.yml
+
 - hosts: iscsi
   become: yes
   vars:
