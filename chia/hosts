@@ -6,9 +6,11 @@ chia-h1
 chia-h2
 chia-h3
 chia-h4
+#chia-p1 ansible_connection=ssh ansible_user=root
+chia-p1
 
 [nas]
-omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
+#omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
 
 
 #役割
@@ -26,7 +28,7 @@ chia-h4
 chia-m1
 
 [compute]
-aorus
+chia-p1
 
 
 #Swarmの構成
@@ -38,4 +40,5 @@ chia-h1
 chia-h2
 chia-h3
 chia-h4
-omv1
+chia-p1
+#omv1
