@@ -31,7 +31,7 @@
 - hosts: proxies
   become: yes
   tasks:
-  - name: hoge
+  - name: Setup VPN Gate
     community.docker.docker_container:
       name: vpn_gate
       image: tantantanuki/ja-vpngate-proxy
@@ -46,7 +46,7 @@
       devices:
         - /dev/net/tun
       restart_policy: always
-  - name: fuga
+  - name: Setup Squid
     apt:
       name: squid
   - ansible.builtin.lineinfile:
@@ -68,3 +68,35 @@
   - service:
       name: squid
       state: restarted
+
+- hosts: vpns
+  become: yes
+  tasks:
+  - name: Set WireGuard
+    file:
+      path: /etc/wireguard
+      state: directory
+  - community.docker.docker_container:
+      name: wireguard
+      image: lscr.io/linuxserver/wireguard:latest
+      capabilities:
+        - NET_ADMIN
+        - SYS_MODULE
+      ports:
+        - 51820:51820/udp
+      volumes:
+        - /etc/wireguard:/config
+      devices:
+        - /dev/net/tun
+      env:
+        PUID: "1000"
+        PGID: "1000"
+        SERVERPORT: "51820"
+        PEERS: "1"
+        PEERDNS: "auto"
+        INTERNAL_SUBNET: "10.13.13.0"
+        ALLOWEDIPS: "0.0.0.0/0"
+        LOG_CONFS: "true"
+      sysctls:
+        net.ipv4.conf.all.src_valid_mark: "1"
+      restart_policy: always

@@ -16,4 +16,7 @@ test
 cache
 
 [proxies]
-test
+proxy
+
+[vpns]
+vpn
