@@ -9,7 +9,11 @@ chia-h2
 chia-h3
 chia-h4
 chia-p4
+test
 
 #役割
 [registry]
 cache
+
+[proxies]
+test

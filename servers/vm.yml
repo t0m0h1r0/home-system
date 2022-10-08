@@ -28,3 +28,43 @@
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
 
+- hosts: proxies
+  become: yes
+  tasks:
+  - name: hoge
+    community.docker.docker_container:
+      name: vpn_gate
+      image: tantantanuki/ja-vpngate-proxy
+      capabilities:
+        - NET_ADMIN
+      dns_servers:
+        - 8.8.8.8
+        - 1.1.1.1
+        - 9.9.9.9
+      ports:
+        - 8118:8118
+      devices:
+        - /dev/net/tun
+      restart_policy: always
+  - name: fuga
+    apt:
+      name: squid
+  - ansible.builtin.lineinfile:
+      path: /etc/squid/squid.conf
+      regexp: 'cache_peer localhost parent 8118 7 no-query'
+      line: 'cache_peer localhost parent 8118 7 no-query'
+  - ansible.builtin.lineinfile:
+      path: /etc/squid/squid.conf
+      regexp: 'never_direct allow all'
+      line: 'never_direct allow all'
+  - ansible.builtin.lineinfile:
+      path: /etc/squid/squid.conf
+      regexp: 'http_access deny all'
+      line: 'http_access allow all'
+  - ansible.builtin.lineinfile:
+      path: /etc/squid/squid.conf
+      regexp: 'cache_dir ufs /var/spool/squid 100 16 256'
+      line: 'cache_dir ufs /var/spool/squid 100 16 256'
+  - service:
+      name: squid
+      state: restarted
