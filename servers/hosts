@@ -3,13 +3,7 @@
 cache
 proxy
 vpn
-chia-m1
-chia-h1
-chia-h2
-chia-h3
-chia-h4
-chia-p4
-test
+ldap
 
 #役割
 [registry]
@@ -20,3 +14,6 @@ proxy
 
 [vpns]
 vpn
+
+[ldaps]
+ldap

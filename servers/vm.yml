@@ -51,8 +51,8 @@
       name: squid
   - ansible.builtin.lineinfile:
       path: /etc/squid/squid.conf
-      regexp: 'cache_peer localhost parent 8118 7 no-query'
-      line: 'cache_peer localhost parent 8118 7 no-query'
+      regexp: 'cache_peer 127.0.0.1 parent 8118 7 no-query'
+      line: 'cache_peer 127.0.0.1 parent 8118 7 no-query'
   - ansible.builtin.lineinfile:
       path: /etc/squid/squid.conf
       regexp: 'never_direct allow all'
@@ -99,4 +99,63 @@
         LOG_CONFS: "true"
       sysctls:
         net.ipv4.conf.all.src_valid_mark: "1"
+      restart_policy: always
+
+- hosts: ldaps
+  become: yes
+  tasks:
+  - name: Set OpenlDAP
+    community.docker.docker_volume:
+      name: certificates
+      driver: local
+      driver_options:
+        type: nfs
+        o: "addr=qnap2,rw,nfsvers=4"
+        device: ":/config/ldap/cert"
+  - community.docker.docker_volume:
+      name: database
+      driver: local
+      driver_options:
+        type: nfs
+        o: "addr=qnap2,rw,nfsvers=4"
+        device: ":/config/ldap/database"
+  - community.docker.docker_volume:
+      name: config
+      driver: local
+      driver_options:
+        type: nfs
+        o: "addr=qnap2,rw,nfsvers=4"
+        device: ":/config/ldap/config"
+  - community.docker.docker_container:
+      name: openldap
+      image: osixia/openldap:latest
+      ports:
+        - 389:389
+        - 636:636
+      volumes:
+        - certificates:/container/service/slapd/assets/certs
+        - database:/var/lib/ldap
+        - config:/etc/ldap/slapd.d
+      env:
+        LDAP_ORGANISATION: "home"
+        LDAP_DOMAIN: "home.local"
+        LDAP_ADMIN_USERNAME: "admin"
+        LDAP_ADMIN_PASSWORD: "admin_pass"
+        LDAP_CONFIG_PASSWORD: "config_pass"
+        LDAP_BASE_DN: "dc=home,dc=local"
+        LDAP_TLS_CRT_FILENAME: "server.crt"
+        LDAP_TLS_KEY_FILENAME: "server.key"
+        LDAP_TLS_CA_CRT_FILENAME: "home.local.ca.crt"
+        LDAP_READONLY_USER: "true"
+        LDAP_READONLY_USER_USERNAME: "user-ro"
+        LDAP_READONLY_USER_PASSWORD: "ro_pass"
+      restart_policy: always
+  - community.docker.docker_container:
+      name: phpldapadmin
+      image: osixia/phpldapadmin:latest
+      ports:
+        - 7443:443
+      env:
+        PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+        PHPLDAPADMIN_HTTPS: "true"
       restart_policy: always

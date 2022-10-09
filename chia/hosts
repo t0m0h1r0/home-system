@@ -1,36 +1,39 @@
 #物理サーバ、仮想マシン設定
 [servers]
 chia-m1
+chia-f1
 chia-h1
 chia-h2
 chia-h3
 chia-h4
 chia-p1
 
-[nas]
-#omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
-
 
 #役割
+[registry]
+cache
+
 [iscsi]
 chia-h1
 chia-h2
 chia-h3
 chia-h4
 
-
 [database]
-chia-m1
+chia-f1
 
 [compute]
 chia-p1
 
+[nas]
+#omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
 
 #Swarmの構成
 [managers]
 chia-m1
 
 [workers]
+chia-f1
 chia-h1
 chia-h2
 chia-h3
