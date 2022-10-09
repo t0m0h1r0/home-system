@@ -1,12 +1,10 @@
 #物理サーバ、仮想マシン設定
 [servers]
-cache
 chia-m1
 chia-h1
 chia-h2
 chia-h3
 chia-h4
-#chia-p1 ansible_connection=ssh ansible_user=root
 chia-p1
 
 [nas]
@@ -14,9 +12,6 @@ chia-p1
 
 
 #役割
-[registry]
-cache
-
 [iscsi]
 chia-h1
 chia-h2
