@@ -159,3 +159,15 @@
         PHPLDAPADMIN_LDAP_HOSTS: "openldap"
         PHPLDAPADMIN_HTTPS: "true"
       restart_policy: always
+
+- hosts: jupyters
+  become: yes
+  tasks:
+  - name: Set Jupyter
+    community.docker.docker_container:
+      name: jupyter
+      image: jupyter/scipy-notebook:latest
+      ports:
+        - 80:8888
+      restart_policy: always
+

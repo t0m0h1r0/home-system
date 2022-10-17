@@ -4,6 +4,8 @@ cache
 proxy
 vpn
 ldap
+pxe
+jupyter
 
 #役割
 [registry]
@@ -17,3 +19,6 @@ vpn
 
 [ldaps]
 ldap
+
+[jupyters]
+jupyter
