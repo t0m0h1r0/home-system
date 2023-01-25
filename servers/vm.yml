@@ -78,7 +78,7 @@
       state: directory
   - community.docker.docker_container:
       name: wireguard
-      image: lscr.io/linuxserver/wireguard:latest
+      image: linuxserver/wireguard:latest
       capabilities:
         - NET_ADMIN
         - SYS_MODULE
@@ -86,13 +86,15 @@
         - 51820:51820/udp
       volumes:
         - /etc/wireguard:/config
-      devices:
-        - /dev/net/tun
+        - /lib/modules:/lib/modules
+          #devices:
+          #- /dev/net/tun
       env:
         PUID: "1000"
         PGID: "1000"
         SERVERPORT: "51820"
-        PEERS: "1"
+        SERVERURL: tomokawa.myddns.me
+        PEERS: "16"
         PEERDNS: "auto"
         INTERNAL_SUBNET: "10.13.13.0"
         ALLOWEDIPS: "0.0.0.0/0"

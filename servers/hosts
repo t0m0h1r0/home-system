@@ -6,6 +6,7 @@ vpn
 ldap
 pxe
 jupyter
+build
 
 #役割
 [registry]
