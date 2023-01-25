@@ -2,10 +2,11 @@
 [servers]
 chia-m1
 chia-f1
-chia-h1
-chia-h2
-chia-h3
-chia-h4
+chia-j0
+chia-j1
+chia-j2
+chia-j3
+chia-j4
 chia-p1
 
 
@@ -14,10 +15,11 @@ chia-p1
 cache
 
 [iscsi]
-chia-h1
-chia-h2
-chia-h3
-chia-h4
+chia-j0
+chia-j1
+chia-j2
+chia-j3
+chia-j4
 
 [database]
 chia-f1
@@ -34,9 +36,10 @@ chia-m1
 
 [workers]
 chia-f1
-chia-h1
-chia-h2
-chia-h3
-chia-h4
+chia-j0
+chia-j1
+chia-j2
+chia-j3
+chia-j4
 chia-p1
 #omv1

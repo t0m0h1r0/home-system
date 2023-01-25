@@ -34,7 +34,7 @@
     mount_point: /mnt/chia
     pv_name: chia_plots
     iscsi_list:
-      - uuid: 50d74254-1324-4711-9e66-77be854a3de1
+      - uuid: 946e6915-f235-4400-9c69-371992427bf9
     iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
   tasks:
     - import_tasks: 11_config_mnt.yml
@@ -44,26 +44,24 @@
   vars:
     mount_point: /mnt/iscsi
     pv_name: chia_plots
-    iscsi_list:
-      - portal: syn2
-        target: iqn.2000-01.com.synology:syn2.Target-1.4007cab6d73
-        uuid: 5ef36ece-6516-4100-b92d-089e66cb9ad9
-      - portal: syn2
-        target: iqn.2000-01.com.synology:syn2.Target-2.4007cab6d73
-        uuid: c832e454-b781-45c8-aaf9-4ee090f9f0b8
-      - portal: qnap2
-        target: iqn.2004-04.com.qnap:ts-832px:iscsi.target.576194
-        uuid: ef1db905-7000-4265-bbd7-7b2bfdc3f976
-      - portal: qnap1
-        target: iqn.2004-04.com.qnap:ts-832x:iscsi.target1.506276
-        uuid: 5ec26b4d-882f-4acf-9c4c-04a0ca7db285
-#      - portal: syn1
-#        target: iqn.2000-01.com.synology:syn1.Target-1.9c3409d65fa
-#        uuid: 51c5c903-3052-4b42-a238-a101e8e729d1
-    iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
-    #iscsi: "{{dict(ansible_play_batch|zip_longest(iscsi_list,fillvalue=iscsi_list[0]))}}"
   tasks:
-    - import_tasks: 05_config_iscsi.yml
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: /dev/sdb1
+        fstype: xfs
+        opts: ro
+        state: mounted
+    - community.docker.docker_volume:
+        name: "{{item.name}}"
+        driver_options:
+          type: none
+          o: bind
+          device: "{{item.dir}}"
+      loop:
+          - { "name": "{{pv_name}}", "dir": "{{mount_point}}/chia/plots" }
 
 - hosts: nas
   become: yes
