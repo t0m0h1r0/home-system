@@ -32,12 +32,16 @@
   become: yes
   vars:
     mount_point: /mnt/chia
-    pv_name: chia_plots
-    iscsi_list:
-      - uuid: 946e6915-f235-4400-9c69-371992427bf9
-    iscsi: "{{dict(ansible_play_batch|zip(iscsi_list))}}"
   tasks:
-    - import_tasks: 11_config_mnt.yml
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: /dev/sdb
+        fstype: ext4
+        opts: rw
+        state: mounted
 
 - hosts: iscsi
   become: yes
