@@ -10,7 +10,7 @@ build
 
 #役割
 [registry]
-cache
+cache ansible_connection=ssh ansible_user=root
 
 [proxies]
 proxy
