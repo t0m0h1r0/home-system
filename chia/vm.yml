@@ -39,7 +39,7 @@
         state: directory
     - mount:
         name: "{{mount_point}}"
-        src: /dev/sdb1
+        src: "/dev/{{device}}"
         fstype: xfs
         opts: ro
         state: mounted

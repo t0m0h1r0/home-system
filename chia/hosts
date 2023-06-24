@@ -2,12 +2,9 @@
 [servers]
 chia-m1
 chia-f1
-chia-j0
-chia-j1
-chia-j2
-chia-j3
-chia-j4
-chia-p1
+chia-h1
+chia-h2
+#chia-p0
 
 
 #役割
@@ -15,17 +12,17 @@ chia-p1
 cache
 
 [iscsi]
-chia-j0
-chia-j1
-chia-j2
-chia-j3
-chia-j4
+chia-h1
+chia-h2 device=sdb
+
+[iscsi:vars]
+device=sdb1
 
 [database]
 chia-f1
 
 [compute]
-chia-p1
+#chia-p0
 
 [nas]
 #omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
@@ -36,10 +33,7 @@ chia-m1
 
 [workers]
 chia-f1
-chia-j0
-chia-j1
-chia-j2
-chia-j3
-chia-j4
-chia-p1
+chia-h1
+chia-h2
+#chia-p0
 #omv1
