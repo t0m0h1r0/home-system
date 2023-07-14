@@ -24,7 +24,7 @@
     join_token: "{{tokens.worker}}"
     state: join
   when: 
-    - inventory_hostname in groups['workers']
+    - inventory_hostname not in groups['managers']
 
 - name: set node labels
   delegate_to: "{{groups['managers'][0]}}"

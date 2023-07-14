@@ -1,18 +1,24 @@
-- name: start Docker registry
+- name: start Docker registry as a pull through cache
   community.docker.docker_container:
     name: registry
-    image: registry:latest
+    image: registry:2
+    volumes:
+      - /var/lib/docker/registry:/var/lib/registry
     ports:
-      - 5000:5000
+      - "5000:5000"
+    env:
+      REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"
     state: started
     restart_policy: always
+
 - name: start apt proxy
   community.docker.docker_container:
     name: apt-cacher
     image: sameersbn/apt-cacher-ng:latest
+    volumes:
+      - /var/lib/docker/cacher:/var/cache/apt-cacher-ng
     ports:
       - 3142:3142
     state: started
     restart_policy: always
-
 
