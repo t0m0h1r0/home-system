@@ -1,0 +1,85 @@
+- hosts: managers:database:iscsi:nas:compute
+  become: yes
+  vars:
+    apt_proxy: "{{groups['registry'][0]}}"
+    apt_apps:
+      - docker.io
+      - docker-compose
+      - python3-docker
+      - nfs-common
+      - tmux
+      - htop
+  tasks:
+    - import_tasks: 02_install_apps.yml
+    - import_tasks: 06_config_docker.yml
+
+- hosts: database
+  become: yes
+  vars:
+    mount_point: /mnt/chia
+  tasks:
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: /dev/sdb
+        fstype: ext4
+        opts: rw
+        state: mounted
+
+- hosts: iscsi
+  become: yes
+  vars:
+    mount_point: /mnt/iscsi
+    pv_name: chia_plots
+  tasks:
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: "/dev/{{device}}"
+        fstype: xfs
+        opts: ro
+        state: mounted
+    - community.docker.docker_volume:
+        name: "{{item.name}}"
+        driver_options:
+          type: none
+          o: bind
+          device: "{{item.dir}}"
+      loop:
+          - { "name": "{{pv_name}}", "dir": "{{mount_point}}/chia/plots" }
+
+- hosts: nas
+  become: yes
+  vars:
+    nas:
+      qnap:
+        dir: /share/chia/plots/
+      omv:
+        dir: /srv/mergerfs/x/chia/plots/
+    pv_name: chia_plots
+    drive: "{{nas[hostvars[inventory_hostname].vendor]}}"
+  tasks:
+    - import_tasks: 15_config_nas.yml
+
+- hosts: managers:database:iscsi:nas:compute
+  become: yes
+  vars:
+    labels:
+      managers:
+        ldap: "true"
+      iscsi:
+        storage: "true"
+      nas:
+        storage: "true"
+      compute:
+        compute: "true"
+      database:
+        database: "true"
+        grafana: "true"
+  tasks:
+    - import_tasks: 07_config_swarm.yml
+

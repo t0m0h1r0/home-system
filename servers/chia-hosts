@@ -1,0 +1,24 @@
+#役割
+[registry]
+cache
+
+#Swarmの構成
+[managers]
+chia-m1
+
+[iscsi]
+chia-h1
+chia-h2 device=sdb
+
+[iscsi:vars]
+device=sdb1
+
+[database]
+chia-f1
+
+[compute]
+#chia-p0
+
+[nas]
+#omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
+

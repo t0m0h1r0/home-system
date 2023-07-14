@@ -1,0 +1,4 @@
+- name: apply netplan
+  shell: netplan apply
+- name: apply system update
+  reboot:

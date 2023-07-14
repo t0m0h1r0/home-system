@@ -1,0 +1,13 @@
+- name: update /etc/sysctl.conf
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+- name: create bridge
+  template:
+    src: "01_bridge-config.yml.j2"
+    dest: "/etc/netplan/99-bridge-config.yaml"
+  notify:
+    - apply system update
