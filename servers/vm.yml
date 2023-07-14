@@ -170,6 +170,9 @@
       name: jupyter
       image: jupyter/scipy-notebook:latest
       ports:
-        - 80:8888
+        - 8888:8888
       restart_policy: always
+      command: start-notebook.sh --NotebookApp.token='uCm10fNvi'
+
+
 

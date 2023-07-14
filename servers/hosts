@@ -1,25 +1,11 @@
 #物理サーバ、仮想マシン設定
 [servers]
 cache
-proxy
-vpn
-ldap
-pxe
 jupyter
-build
 
 #役割
 [registry]
 cache ansible_connection=ssh ansible_user=root
 
-[proxies]
-proxy
-
-[vpns]
-vpn
-
-[ldaps]
-ldap
-
 [jupyters]
-jupyter
+jupyter ansible_connection=ssh ansible_user=root
