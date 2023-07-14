@@ -13,7 +13,7 @@
     - import_tasks: 06_config_docker.yml
     - import_tasks: 08_config_registry.yml
 
-- hosts: ldaps:proxies:vpns:jupyters
+- hosts: servers
   become: yes
   vars:
     apt_proxy: "{{groups['registry'][0]}}"

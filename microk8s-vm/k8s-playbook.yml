@@ -1,0 +1,79 @@
+---
+- hosts: microk8s_cluster
+  become: true
+  tasks:
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: present
+      tags: install
+
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        classic: yes
+        channel: stable
+      tags: install
+
+    - name: Enable microk8s services
+      command: microk8s enable dns dashboard storage
+      tags: install
+
+- hosts: masters
+  become: yes
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        classic: yes
+        channel: 1.21/stable
+      tags: install
+
+    - name: Add user to microk8s group
+      user:
+        name: "{{ ansible_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Ensure microk8s is enabled
+      command: "microk8s status --wait-ready --timeout 30"
+
+    - name: Generate token
+      become: yes
+      command: "microk8s add-node"
+      register: master_join_command
+
+- hosts: workers
+  become: yes
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        classic: yes
+        channel: 1.21/stable
+
+    - name: Add user to microk8s group
+      user:
+        name: "{{ ansible_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Ensure microk8s is enabled
+      command: "microk8s status --wait-ready --timeout 30"
+
+    - name: Join all other nodes to the cluster
+      become: yes
+      command: "{{ hostvars[groups['masters'][0]].master_join_command.stdout_lines[1] }}"
+
+- hosts: microk8s_cluster
+  become: true
+  tasks:
+    - name: Join all other nodes to the cluster
+      command: "{{ hostvars[groups['masters'][0]].master_join_command.stdout_lines[1] }}"
+      when: inventory_hostname not in groups['masters'][0]
+      tags: cluster
+

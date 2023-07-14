@@ -22,3 +22,9 @@ chia-f1
 [nas]
 #omv1 ansible_connection=ssh ansible_user=root ansible_python_interpreter=/usr/bin/python3 vendor=omv
 
+[servers:children]
+managers
+iscsi
+database
+compute
+nas

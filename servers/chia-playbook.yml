@@ -1,4 +1,4 @@
-- hosts: managers:database:iscsi:nas:compute
+- hosts: servers
   become: yes
   vars:
     apt_proxy: "{{groups['registry'][0]}}"
@@ -65,7 +65,7 @@
   tasks:
     - import_tasks: 15_config_nas.yml
 
-- hosts: managers:database:iscsi:nas:compute
+- hosts: servers
   become: yes
   vars:
     labels:

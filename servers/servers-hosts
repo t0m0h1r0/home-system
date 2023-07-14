@@ -2,21 +2,6 @@
 ansible_connection=ssh
 ansible_user=root
 
-# 物理サーバ、仮想マシン設定
-[servers]
-cache
-jupyter
-test0
-test1
-test2
-test3
-test4
-test5
-test6
-test7
-test8
-test9
-
 # 役割
 [registry]
 cache
@@ -34,3 +19,5 @@ test7
 test8
 test9
 
+[servers:children]
+jupyters
