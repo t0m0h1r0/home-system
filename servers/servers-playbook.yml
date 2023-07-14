@@ -165,14 +165,19 @@
 - hosts: jupyters
   become: yes
   tasks:
+  - name: Create directory
+    file:
+      path: /root/work
+      state: directory
+      mode: '0777'
   - name: Set Jupyter
     community.docker.docker_container:
       name: jupyter
       image: jupyter/scipy-notebook:latest
       ports:
         - 8888:8888
+      volumes:
+        - /root/work:/home/jovyan/work
       restart_policy: always
       command: start-notebook.sh --NotebookApp.token='uCm10fNvi'
-
-
 
