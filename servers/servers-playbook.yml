@@ -8,6 +8,7 @@
     snap_apps:
     pvs:
       - { "name": "docker_dir", "dir": "/var/lib/docker" }
+    github_id: t0m0h1r0
   tasks:
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
@@ -24,6 +25,8 @@
       - nfs-common
       - tmux
       - htop
+      - ssh-import-id
+    github_id: t0m0h1r0
   tasks:
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
