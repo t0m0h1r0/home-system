@@ -26,10 +26,17 @@
       - tmux
       - htop
       - ssh-import-id
-    github_id: t0m0h1r0
   tasks:
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
+
+- hosts: servers
+  vars:
+    github_id: t0m0h1r0
+  tasks:
+    - name: import ssh-key
+      shell: >
+        ssh-import-id gh:{{github_id}}
 
 - hosts: proxies
   become: yes

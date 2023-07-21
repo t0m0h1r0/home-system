@@ -14,4 +14,3 @@
   apt:
     name: "{{item}}"
   loop: "{{apt_apps if apt_apps is iterable else []}}"
-
