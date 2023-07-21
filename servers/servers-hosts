@@ -6,9 +6,13 @@ ansible_user=root
 [registry]
 cache
 
+[managements]
+ansible
+
 [jupyters]
 jupyter
 
 [servers:children]
 registry
+managements
 jupyters

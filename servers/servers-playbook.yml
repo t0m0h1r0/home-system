@@ -30,6 +30,21 @@
     github_id: t0m0h1r0
   tasks:
     - import_tasks: 08_config_registry.yml
+        
+- hosts: managements
+  become: yes
+  tasks:
+  - apt:
+      name: ansible
+  - ansible.builtin.git:
+      repo: https://github.com/t0m0h1r0/home-system.git
+      dest: ~/home-system/
+      update: no
+  - ansible.builtin.blockinfile:
+      path: ~/.ansible.cfg
+      block: |
+        [defaults]
+        host_key_checking = False
 
 - hosts: proxies
   become: yes
