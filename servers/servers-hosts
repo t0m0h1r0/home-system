@@ -10,4 +10,5 @@ cache
 jupyter
 
 [servers:children]
+registry
 jupyters
