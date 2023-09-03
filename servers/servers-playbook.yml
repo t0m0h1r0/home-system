@@ -3,13 +3,21 @@
   vars:
     apt_proxy: "{{groups['registry'][0]}}"
     apt_apps:
-      - docker.io
-      - docker-compose
-      - python3-docker
       - nfs-common
       - tmux
       - htop
       - ssh-import-id
+  tasks:
+    - import_tasks: 02_install_apps.yml
+
+- hosts: registry managements jupyters
+  become: yes
+  vars:
+    apt_proxy: "{{groups['registry'][0]}}"
+    apt_apps:
+      - docker.io
+      - docker-compose
+      - python3-docker
   tasks:
     - import_tasks: 02_install_apps.yml
     - import_tasks: 06_config_docker.yml
@@ -86,6 +94,34 @@
   - service:
       name: squid
       state: restarted
+
+- hosts: pxes
+  become: yes
+  tasks:
+  - file:
+      path: /root/config
+      state: directory
+  - file:
+      path: /root/assets
+      state: directory
+  - community.docker.docker_container:
+      name: netbootxyz
+      image: lscr.io/linuxserver/netbootxyz:latest
+      env:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Etc/UTC"
+        MENU_VERSION: "1.9.9"
+        PORT_RANGE: "30000:30010"
+        SUBFOLDER: "/"
+      volumes:
+        - /root/config:/config
+        - /root/assets:/assets
+      ports:
+        - 3000:3000
+        - 69:69/udp
+        - 8080:80
+      restart_policy: always
 
 - hosts: vpns
   become: yes

@@ -12,7 +12,16 @@ ansible
 [jupyters]
 jupyter
 
+[gpus]
+nvidia ansible_user=tomohiro
+mame ansible_user=tomohiro
+
+[pxes]
+pxe
+
 [servers:children]
 registry
 managements
 jupyters
+gpus
+pxes
