@@ -42,6 +42,7 @@
   vars:
     mount_point: /mnt/iscsi
     pv_name: chia_plots
+    device: sdb
   tasks:
     - file:
         path: "{{mount_point}}"

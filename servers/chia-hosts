@@ -7,11 +7,8 @@ cache
 chia-m1
 
 [iscsi]
-chia-h3 device=sdb
-chia-h4 device=sdb
-
-[iscsi:vars]
-device=sdb1
+chia-h3
+chia-h4
 
 [database]
 chia-f1
