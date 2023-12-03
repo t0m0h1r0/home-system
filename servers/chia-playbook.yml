@@ -9,6 +9,7 @@
       - nfs-common
       - tmux
       - htop
+      - qemu-guest-agent
     github_id: t0m0h1r0
   tasks:
     - import_tasks: 02_install_apps.yml
