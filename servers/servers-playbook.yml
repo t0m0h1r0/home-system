@@ -53,6 +53,8 @@
       block: |
         [defaults]
         host_key_checking = False
+      state: present
+      create: true
 
 - hosts: proxies
   become: yes
