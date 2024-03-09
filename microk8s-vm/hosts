@@ -1,5 +1,0 @@
-[nodes]
-node1 ansible_connection=lxd
-node2 ansible_connection=lxd
-node3 ansible_connection=lxd
-node4 ansible_connection=lxd
