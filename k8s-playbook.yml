@@ -49,3 +49,9 @@
         opts: ro
         state: mounted
 
+- hosts: servers
+  become: yes
+  tasks:
+    - name: fstrim
+      shell: >
+        fstrim -av
