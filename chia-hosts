@@ -9,6 +9,9 @@ chia-m1
 [iscsi]
 chia-h3
 chia-h4
+chia-h5
+chia-h6
+chia-h7
 
 [database]
 chia-f1

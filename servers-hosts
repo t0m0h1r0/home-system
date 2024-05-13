@@ -16,6 +16,15 @@ jupyter
 nvidia ansible_user=tomohiro
 mame ansible_user=tomohiro
 
+[vms]
+192.168.1.230 ansible_user=tomohiro
+192.168.1.231 ansible_user=tomohiro
+192.168.1.232 ansible_user=tomohiro
+192.168.1.233 ansible_user=tomohiro
+192.168.1.234 ansible_user=tomohiro
+192.168.1.235 ansible_user=tomohiro
+192.168.1.236 ansible_user=tomohiro
+
 [pxes]
 pxe
 
@@ -25,3 +34,4 @@ managements
 jupyters
 gpus
 pxes
+vms

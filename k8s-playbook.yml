@@ -1,79 +1,51 @@
----
-- hosts: microk8s_cluster
-  become: true
-  tasks:
-    - name: Install snapd
-      apt:
-        name: snapd
-        state: present
-      tags: install
-
-    - name: Install microk8s
-      snap:
-        name: microk8s
-        classic: yes
-        channel: stable
-      tags: install
-
-    - name: Enable microk8s services
-      command: microk8s enable dns dashboard storage
-      tags: install
-
-- hosts: masters
+- hosts: servers
   become: yes
-  gather_facts: no
-  serial: 1
+  vars:
+    apt_proxy: "{{groups['registry'][0]}}"
+    apt_apps:
+      - tmux
+      - htop
+      - qemu-guest-agent
   tasks:
-    - name: Install microk8s
-      snap:
-        name: microk8s
-        classic: yes
-        channel: 1.21/stable
-      tags: install
+    - import_tasks: 02_install_apps.yml
 
-    - name: Add user to microk8s group
-      user:
-        name: "{{ ansible_user }}"
-        groups: microk8s
-        append: yes
+- hosts: servers
+  vars:
+    github_id: t0m0h1r0
+  tasks:
+    - name: import ssh-key
+      shell: >
+        ssh-import-id gh:{{github_id}}
 
-    - name: Ensure microk8s is enabled
-      command: "microk8s status --wait-ready --timeout 30"
-
-    - name: Generate token
-      become: yes
-      command: "microk8s add-node"
-      register: master_join_command
-
-- hosts: workers
+- hosts: database
   become: yes
-  gather_facts: no
-  serial: 1
+  vars:
+    mount_point: /mnt/chia
   tasks:
-    - name: Install microk8s
-      snap:
-        name: microk8s
-        classic: yes
-        channel: 1.21/stable
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: /dev/sdb
+        fstype: ext4
+        opts: rw
+        state: mounted
 
-    - name: Add user to microk8s group
-      user:
-        name: "{{ ansible_user }}"
-        groups: microk8s
-        append: yes
-
-    - name: Ensure microk8s is enabled
-      command: "microk8s status --wait-ready --timeout 30"
-
-    - name: Join all other nodes to the cluster
-      become: yes
-      command: "{{ hostvars[groups['masters'][0]].master_join_command.stdout_lines[1] }}"
-
-- hosts: microk8s_cluster
-  become: true
+- hosts: iscsi
+  become: yes
+  vars:
+    mount_point: /mnt/iscsi
+    pv_name: chia_plots
+    device: sdb
   tasks:
-    - name: Join all other nodes to the cluster
-      command: "{{ hostvars[groups['masters'][0]].master_join_command.stdout_lines[1] }}"
-      when: inventory_hostname not in groups['masters'][0]
-      tags: cluster
+    - file:
+        path: "{{mount_point}}"
+        state: directory
+    - mount:
+        name: "{{mount_point}}"
+        src: "/dev/{{device}}"
+        fstype: xfs
+        opts: ro
+        state: mounted
 
