@@ -15,15 +15,20 @@ jupyter
 [gpus]
 nvidia ansible_user=tomohiro
 mame ansible_user=tomohiro
+ai ansible_user=tomohiro
+podman
+test ansible_user=tomohiro
 
 [vms]
+192.168.1.220 ansible_user=tomohiro
+192.168.1.221 ansible_user=tomohiro
+192.168.1.222 ansible_user=tomohiro
+192.168.1.223 ansible_user=tomohiro
 192.168.1.230 ansible_user=tomohiro
 192.168.1.231 ansible_user=tomohiro
 192.168.1.232 ansible_user=tomohiro
 192.168.1.233 ansible_user=tomohiro
-192.168.1.234 ansible_user=tomohiro
-192.168.1.235 ansible_user=tomohiro
-192.168.1.236 ansible_user=tomohiro
+build
 
 [pxes]
 pxe
