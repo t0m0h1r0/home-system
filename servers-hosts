@@ -24,11 +24,12 @@ test ansible_user=tomohiro
 192.168.1.221 ansible_user=tomohiro
 192.168.1.222 ansible_user=tomohiro
 192.168.1.223 ansible_user=tomohiro
-192.168.1.230 ansible_user=tomohiro
-192.168.1.231 ansible_user=tomohiro
-192.168.1.232 ansible_user=tomohiro
-192.168.1.233 ansible_user=tomohiro
+192.168.1.235 ansible_user=tomohiro
+192.168.1.236 ansible_user=tomohiro
+192.168.1.237 ansible_user=tomohiro
+192.168.1.238 ansible_user=tomohiro
 build
+music
 
 [pxes]
 pxe

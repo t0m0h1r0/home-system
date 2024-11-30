@@ -6,6 +6,7 @@
       - nfs-common
       - tmux
       - htop
+      - python3-launchpadlib
       - ssh-import-id
   tasks:
     - import_tasks: 02_install_apps.yml
