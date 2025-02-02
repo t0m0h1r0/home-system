@@ -1,0 +1,53 @@
+# pxes.yml - PXE環境固有の変数
+
+# NetBoot.xyz設定
+netbootxyz_config:
+  container:
+    image: lscr.io/linuxserver/netbootxyz:latest
+    name: netbootxyz
+  
+  ports:
+    web: 3000
+    tftp: 69
+    http: 8080
+
+  menu_settings:
+    version: "1.9.9"
+    port_range: "30000:30010"
+    subfolder: "/"
+
+  directories:
+    config: /root/config
+    assets: /root/assets
+
+# ネットワーク設定
+pxe_network_config:
+  interface: eth0
+  dhcp_range:
+    start: 192.168.1.100
+    end: 192.168.1.200
+  subnet: 192.168.1.0/24
+  gateway: 192.168.1.1
+  dns_servers:
+    - 8.8.8.8
+    - 1.1.1.1
+
+# OSイメージ設定
+os_images:
+  ubuntu:
+    - version: 20.04
+      arch: amd64
+    - version: 22.04
+      arch: amd64
+  centos:
+    - version: 8
+      arch: x86_64
+  debian:
+    - version: 11
+      arch: amd64
+
+# セキュリティ設定
+pxe_security_config:
+  allow_unknown_boot: false
+  boot_timeout: 60  # 秒
+  max_boot_attempts: 3

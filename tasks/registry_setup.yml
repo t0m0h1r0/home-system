@@ -1,0 +1,35 @@
+# レジストリセットアップタスク
+
+- name: Dockerレジストリボリュームの作成
+  file:
+    path: "{{ registry_storage.docker.path }}"
+    state: directory
+    mode: '0755'
+
+- name: Apt-Cacheボリュームの作成
+  file:
+    path: "{{ registry_storage.apt_cache.path }}"
+    state: directory
+    mode: '0755'
+
+- name: Dockerレジストリコンテナの起動
+  community.docker.docker_container:
+    name: "{{ registry_containers.docker.name }}"
+    image: "{{ registry_containers.docker.image }}"
+    volumes:
+      - "{{ registry_storage.docker.path }}:/var/lib/registry"
+    ports:
+      - "{{ registry_config.docker.port }}:5000"
+    env:
+      REGISTRY_PROXY_REMOTEURL: "{{ registry_config.docker.remote_url }}"
+    restart_policy: always
+
+- name: Apt-Cacheコンテナの起動
+  community.docker.docker_container:
+    name: "{{ registry_containers.apt_cache.name }}"
+    image: "{{ registry_containers.apt_cache.image }}"
+    volumes:
+      - "{{ registry_storage.apt_cache.path }}:/var/cache/apt-cacher-ng"
+    ports:
+      - "{{ registry_config.apt_cache.port }}:3142"
+    restart_policy: always

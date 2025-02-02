@@ -1,0 +1,40 @@
+# jupyters.yml - Jupyter環境固有の変数
+
+# Jupyter Notebookの設定
+jupyter_config:
+  container:
+    image: jupyter/scipy-notebook:latest
+    name: jupyter
+    port: 8888
+  
+  notebook_options:
+    token: uCm10fNvi
+    base_url: /
+    default_notebook_dir: /home/jovyan/work
+
+# 作業ディレクトリ設定
+work_directory:
+  host_path: /root/work
+  container_path: /home/jovyan/work
+  permissions: '0777'
+
+# インストールするPythonパッケージ
+jupyter_python_packages:
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - scipy
+  - seaborn
+
+# リソース制限
+resource_limits:
+  cpu_limit: 2
+  memory_limit: 4G
+  storage_limit: 10G
+
+# セキュリティ設定
+security_config:
+  disable_token_auth: false
+  allow_origin: '*'
+  enable_cors: true

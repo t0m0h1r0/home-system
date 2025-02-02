@@ -1,0 +1,76 @@
+# k8s.yml - Kubernetes環境固有の変数
+
+# クラスター設定
+k8s_cluster_config:
+  network:
+    pod_cidr: 10.244.0.0/16
+    service_cidr: 10.96.0.0/12
+  
+  control_plane:
+    nodes:
+      - 192.168.1.230
+      - 192.168.1.220
+      - 192.168.1.240
+  
+  worker_nodes:
+    - 192.168.1.231
+    - 192.168.1.232
+    - 192.168.1.233
+    - 192.168.1.221
+    - 192.168.1.222
+    - 192.168.1.223
+    - 192.168.1.241
+    - 192.168.1.242
+    - 192.168.1.243
+
+# ストレージ設定
+storage_config:
+  default_storage_class: local-storage
+  volumes:
+    chia_plots:
+      mount_point: /mnt/chia
+      device: /dev/sdb
+      fstype: ext4
+      options: rw
+
+# ネットワーク設定
+network_config:
+  cni_plugin: calico
+  service_proxy_mode: ipvs
+  dns_service_ip: 10.96.0.10
+
+# クラスターセキュリティ設定
+security_config:
+  authentication:
+    method: token
+    token_ttl: 24h
+  authorization:
+    mode: RBAC
+  
+  network_policies:
+    default_deny: true
+    allow_internal_communication: true
+
+# リソース割り当て
+resource_quotas:
+  default_namespace:
+    requests:
+      cpu: 1
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+
+# モニタリングと可観測性
+monitoring_config:
+  enabled: true
+  prometheus:
+    storage_size: 50Gi
+  grafana:
+    admin_password: admin_password
+
+# ロギング設定
+logging_config:
+  elasticsearch:
+    storage_size: 100Gi
+  retention_days: 30

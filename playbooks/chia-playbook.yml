@@ -1,0 +1,101 @@
+# chia-playbook.yml - Chia環境用のPlaybook
+
+- hosts: servers
+  ansible.builtin.import_playbook: common.yml
+
+- hosts: database
+  become: yes
+  vars:
+    mount_point: "{{ storage_config.volumes.chia_plots.mount_point }}"
+    device: "{{ storage_config.volumes.chia_plots.device }}"
+  tasks:
+    - name: マウントポイントディレクトリの作成
+      file:
+        path: "{{ mount_point }}"
+        state: directory
+
+    - name: ストレージのマウント
+      mount:
+        name: "{{ mount_point }}"
+        src: "{{ device }}"
+        fstype: "{{ storage_config.volumes.chia_plots.fstype }}"
+        opts: "{{ storage_config.volumes.chia_plots.options }}"
+        state: mounted
+
+- hosts: iscsi
+  become: yes
+  vars:
+    mount_point: "{{ storage_config.iscsi.mount_point }}"
+    device: "{{ storage_config.iscsi.device }}"
+    pv_name: "{{ storage_config.iscsi.pv_name }}"
+  tasks:
+    - name: マウントポイントディレクトリの作成
+      file:
+        path: "{{ mount_point }}"
+        state: directory
+
+    - name: iSCSIターゲットのマウント
+      mount:
+        name: "{{ mount_point }}"
+        src: "/dev/{{ device }}"
+        fstype: "{{ storage_config.iscsi.fstype }}"
+        opts: "{{ storage_config.iscsi.options }}"
+        state: mounted
+
+    - name: Chiaプロット用Dockerボリュームの作成
+      community.docker.docker_volume:
+        name: "{{ pv_name }}"
+        driver_options:
+          type: none
+          o: bind
+          device: "{{ mount_point }}/chia/plots"
+
+- hosts: nas
+  become: yes
+  vars:
+    nas:
+      qnap:
+        dir: "{{ storage_config.nas_storage.qnap.path }}"
+      omv:
+        dir: "{{ storage_config.nas_storage.omv.path }}"
+    pv_name: chia_plots
+    drive: "{{ nas[hostvars[inventory_hostname].vendor] }}"
+  tasks:
+    - name: NASストレージの設定
+      import_tasks: 15_config_nas.yml
+
+- hosts: servers
+  become: yes
+  vars:
+    labels: "{{ swarm_labels }}"
+  tasks:
+    - name: Docker Swarmの設定
+      import_tasks: 07_config_swarm.yml
+
+- hosts: managers
+  become: yes
+  tasks:
+    - name: Chiaユーザーの作成
+      user:
+        name: "{{ user_config.username }}"
+        uid: "{{ user_config.uid }}"
+        group: "{{ user_config.gid }}"
+        home: "{{ user_config.home_directory }}"
+        createhome: yes
+        shell: /bin/bash
+
+    - name: Chiaデータディレクトリの作成
+      file:
+        path: "{{ plotting_config.temp_dir }}"
+        state: directory
+        owner: "{{ user_config.username }}"
+        group: "{{ user_config.gid }}"
+        mode: '0755'
+
+    - name: Chiaプロット最終ディレクトリの作成
+      file:
+        path: "{{ plotting_config.final_dir }}"
+        state: directory
+        owner: "{{ user_config.username }}"
+        group: "{{ user_config.gid }}"
+        mode: '0755'

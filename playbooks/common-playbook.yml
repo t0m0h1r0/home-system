@@ -1,0 +1,45 @@
+# common.yml - 共通タスクを定義するプレイブック
+
+- hosts: servers
+  become: yes
+  vars:
+    common_apt_apps: "{{ common_base_apps + (common_docker_apps | default([])) + (common_nfs_apps | default([])) }}"
+
+  tasks:
+    - name: システムパッケージの更新
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        autoclean: yes
+        upgrade: full
+
+    - name: 共通アプリケーションのインストール
+      apt:
+        name: "{{ common_apt_apps }}"
+        state: present
+
+    - name: Docker設定ディレクトリの作成
+      file:
+        path: /etc/docker
+        state: directory
+        mode: '0755'
+
+    - name: Docker daemon設定の配置
+      template:
+        src: ../templates/docker-daemon.json.j2
+        dest: /etc/docker/daemon.json
+      notify: Dockerの再起動
+
+    - name: GitHub SSHキーのインポート
+      shell: >
+        ssh-import-id gh:{{ github_id }}
+      when: 
+        - github_id is defined
+        - ssh_key_import | default(true)
+
+  handlers:
+    - name: Dockerの再起動
+      service:
+        name: docker
+        state: restarted
+        enabled: yes

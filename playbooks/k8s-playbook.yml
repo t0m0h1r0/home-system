@@ -1,0 +1,85 @@
+# k8s-playbook.yml - Kubernetes環境用のPlaybook
+
+- hosts: servers
+  ansible.builtin.import_playbook: common.yml
+
+- hosts: database
+  become: yes
+  vars:
+    mount_point: "{{ storage_config.volumes.chia_plots.mount_point }}"
+    device: "{{ storage_config.volumes.chia_plots.device }}"
+  tasks:
+    - name: マウントポイントディレクトリの作成
+      file:
+        path: "{{ mount_point }}"
+        state: directory
+
+    - name: ストレージのマウント
+      mount:
+        name: "{{ mount_point }}"
+        src: "{{ device }}"
+        fstype: "{{ storage_config.volumes.chia_plots.fstype }}"
+        opts: "{{ storage_config.volumes.chia_plots.options }}"
+        state: mounted
+
+- hosts: iscsi
+  become: yes
+  vars:
+    mount_point: "{{ storage_config.iscsi.mount_point }}"
+    device: "{{ storage_config.iscsi.device }}"
+    pv_name: "{{ storage_config.iscsi.pv_name }}"
+  tasks:
+    - name: マウントポイントディレクトリの作成
+      file:
+        path: "{{ mount_point }}"
+        state: directory
+
+    - name: iSCSIターゲットのマウント
+      mount:
+        name: "{{ mount_point }}"
+        src: "/dev/{{ device }}"
+        fstype: "{{ storage_config.iscsi.fstype }}"
+        opts: "{{ storage_config.iscsi.options }}"
+        state: mounted
+
+- hosts: servers
+  become: yes
+  tasks:
+    - name: ファイルシステムのトリム
+      shell: fstrim -av
+      changed_when: false
+
+- hosts: manager
+  become: yes
+  tasks:
+    - name: Kubernetesクラスターの初期化
+      command: kubeadm init --pod-network-cidr={{ k8s_cluster_config.network.pod_cidr }}
+      args:
+        creates: /etc/kubernetes/admin.conf
+      register: init_cluster
+
+    - name: kubeconfigの配置
+      block:
+        - file:
+            path: ~/.kube
+            state: directory
+        - copy:
+            src: /etc/kubernetes/admin.conf
+            dest: ~/.kube/config
+            remote_src: yes
+            owner: root
+            group: root
+            mode: '0600'
+      when: init_cluster.changed
+
+    - name: Calicoネットワークプラグインのインストール
+      command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+      when: init_cluster.changed
+
+- hosts: worker
+  become: yes
+  tasks:
+    - name: ワーカーノードのクラスター参加
+      command: kubeadm join {{ k8s_cluster_config.control_plane.nodes[0] }}:6443
+      args:
+        creates: /etc/kubernetes/kubelet.conf

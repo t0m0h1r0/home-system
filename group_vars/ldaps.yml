@@ -1,0 +1,73 @@
+# ldaps.yml - LDAP環境固有の変数
+
+# OpenLDAP設定
+openldap_config:
+  organization: home
+  domain: home.local
+  base_dn: dc=home,dc=local
+
+# 管理者設定
+admin_config:
+  username: admin
+  password: admin_pass
+  config_password: config_pass
+
+# 読み取り専用ユーザー設定
+readonly_user:
+  username: user-ro
+  password: ro_pass
+
+# TLS/SSL設定
+tls_config:
+  enabled: true
+  cert_filename: server.crt
+  key_filename: server.key
+  ca_cert_filename: home.local.ca.crt
+
+# NFS ボリューム設定
+nfs_volumes:
+  certificates:
+    source: qnap2:/config/ldap/cert
+    mount_point: /container/service/slapd/assets/certs
+  database:
+    source: qnap2:/config/ldap/database
+    mount_point: /var/lib/ldap
+  config:
+    source: qnap2:/config/ldap/config
+    mount_point: /etc/ldap/slapd.d
+
+# phpLDAPadmin設定
+phpldapadmin_config:
+  port: 7443
+  https: true
+  ldap_host: openldap
+
+# ユーザーとグループ設定
+default_groups:
+  - name: users
+    gid: 500
+  - name: groups
+    gid: 100
+
+# デフォルトユーザー設定
+default_users:
+  - username: tomohiro
+    uid: 1000
+    gid: 500
+    home_directory: /home/users/tomohiro
+  - username: chia
+    uid: 1001
+    gid: 500
+    home_directory: /home/users/chia
+  - username: game
+    uid: 2000
+    gid: 100
+    home_directory: /home/game
+
+# セキュリティ設定
+security_config:
+  password_policy:
+    min_length: 8
+    complexity_requirements: true
+  access_controls:
+    default_shell: /bin/bash

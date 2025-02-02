@@ -1,0 +1,27 @@
+# Squidプロキシ設定テンプレート
+
+# VPNゲートウェイのキャッシュピア設定
+cache_peer 127.0.0.1 parent 8118 7 no-query
+
+# プロキシ転送ポリシー
+never_direct allow all
+
+# アクセスコントロール
+http_access deny all
+http_access allow localhost
+http_access allow localnet
+
+# キャッシュディレクトリ設定
+cache_dir ufs /var/spool/squid 100 16 256
+
+# ポート設定
+http_port 3128
+
+# その他の設定
+visible_hostname proxy
+via off
+forwarded_for delete
+
+# ログ設定
+access_log /var/log/squid/access.log
+cache_log /var/log/squid/cache.log

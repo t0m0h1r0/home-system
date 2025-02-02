@@ -1,0 +1,32 @@
+# managements.yml - 管理サーバー固有の変数
+
+# Ansible設定
+ansible_management:
+  home_directory: ~/home-system/
+  config_file: ~/.ansible.cfg
+
+# リポジトリ設定
+repository_config:
+  name: home-system
+  url: https://github.com/t0m0h1r0/home-system.git
+  update_policy: no
+
+# Ansible設定オプション
+ansible_configuration:
+  host_key_checking: False
+  default_remote_user: root
+  gathering: smart
+  fact_caching: yaml
+  fact_caching_connection: /tmp/ansible_facts_cache
+
+# SSHキー管理
+ssh_key_management:
+  import_from_github: true
+  github_username: t0m0h1r0
+
+# ロギングと監査設定
+management_logging:
+  log_path: /var/log/ansible
+  log_rotation:
+    max_size: 10M
+    backup_count: 5

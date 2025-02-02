@@ -1,0 +1,9 @@
+{
+    "insecure-registries": [
+        "{% if groups['registry'] is defined %}{{ groups['registry'][0] }}:{{ registry_config.docker.port }}{% endif %}"
+    ],
+    "registry-mirrors": [
+        "{% if groups['registry'] is defined %}http://{{ groups['registry'][0] }}:{{ registry_config.docker.port }}{% endif %}"
+    ],
+    "data-root": "/var/lib/docker"
+}

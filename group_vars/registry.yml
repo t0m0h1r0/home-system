@@ -1,0 +1,41 @@
+# registry.yml - レジストリ環境固有の変数
+
+# レジストリ設定
+registry_config:
+  docker:
+    port: 5000
+    remote_url: "https://registry-1.docker.io"
+  apt_cache:
+    port: 3142
+
+# レジストリストレージ設定
+registry_storage:
+  docker:
+    path: "/var/lib/docker/registry"
+  apt_cache:
+    path: "/var/lib/docker/cacher"
+
+# レジストリコンテナ設定
+registry_containers:
+  docker:
+    image: "registry:2"
+    name: "registry"
+  apt_cache:
+    image: "sameersbn/apt-cacher-ng:latest"
+    name: "apt-cacher"
+
+# セキュリティ設定
+registry_security:
+  insecure_registries: []  # 動的に設定
+  registry_mirrors: []     # 動的に設定
+
+# レジストリのホワイトリスト
+allowed_registries:
+  - docker.io
+  - quay.io
+  - ghcr.io
+
+# キャッシュ設定
+cache_configurations:
+  max_cache_size: 100  # GB単位
+  cleanup_days: 30

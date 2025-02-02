@@ -1,0 +1,60 @@
+# servers.yml - サーバー全般の変数
+
+# サーバーのラベル定義
+server_labels:
+  managers:
+    ldap: "true"
+  iscsi:
+    storage: "true"
+  nas:
+    storage: "true"
+  compute:
+    compute: "true"
+  database:
+    database: "true"
+    grafana: "true"
+
+# デフォルトのマウントポイント
+default_mount_points:
+  chia: "/mnt/chia"
+  iscsi: "/mnt/iscsi"
+
+# ストレージ設定
+storage_configs:
+  chia:
+    device: "/dev/sdb"
+    fstype: ext4
+    mount_options: rw
+  iscsi:
+    device: "/dev/sdb"
+    fstype: xfs
+    mount_options: ro
+
+# ネットワーク設定
+network_configs:
+  mtu: 9000
+  bridge_name: br0
+
+# デフォルトのDockerボリューム
+default_docker_volumes:
+  - name: docker_dir
+    path: "/var/lib/docker"
+
+# リソース制限
+resource_limits:
+  max_peers: 16
+  internal_subnet: "10.13.13.0"
+  allowed_ips: "0.0.0.0/0"
+
+# コンテナ共通設定
+container_defaults:
+  restart_policy: always
+  log_driver: json-file
+  log_options:
+    max-size: "10m"
+    max-file: "3"
+
+# サーバーグループ間の接続設定
+server_group_connections:
+  registry_port: 5000
+  apt_cache_port: 3142

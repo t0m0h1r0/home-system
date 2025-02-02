@@ -1,0 +1,210 @@
+# servers-playbook.yml - サーバー全般のPlaybook
+
+- hosts: servers
+  ansible.builtin.import_playbook: common.yml
+
+- hosts: registry managements jupyters
+  become: yes
+  tasks:
+    - name: Dockerアプリケーションのインストール
+      apt:
+        name: "{{ common_docker_apps }}"
+
+    - name: Dockerレジストリの設定
+      block:
+        - import_tasks: 06_config_docker.yml
+
+- hosts: vms
+  become: yes
+  tasks:
+    - name: Dockerアプリケーションのインストール
+      apt:
+        name: "{{ common_docker_apps }}"
+
+- hosts: registry
+  become: yes
+  vars:
+    pvs:
+      - { "name": "docker_dir", "dir": "/var/lib/docker" }
+  tasks:
+    - name: レジストリの設定
+      import_tasks: 08_config_registry.yml
+
+- hosts: proxies
+  become: yes
+  tasks:
+    - name: VPN Gateのセットアップ
+      community.docker.docker_container:
+        name: vpn_gate
+        image: tantantanuki/ja-vpngate-proxy
+        capabilities:
+          - NET_ADMIN
+        dns_servers:
+          - 8.8.8.8
+          - 1.1.1.1
+          - 9.9.9.9
+        ports:
+          - 8118:8118
+        devices:
+          - /dev/net/tun
+        restart_policy: always
+
+    - name: Squidプロキシのインストールと設定
+      block:
+        - name: Squidのインストール
+          apt:
+            name: squid
+        
+        - name: Squidの設定
+          lineinfile:
+            path: /etc/squid/squid.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+          loop:
+            - { regexp: 'cache_peer 127.0.0.1 parent 8118 7 no-query', line: 'cache_peer 127.0.0.1 parent 8118 7 no-query' }
+            - { regexp: 'never_direct allow all', line: 'never_direct allow all' }
+            - { regexp: 'http_access deny all', line: 'http_access allow all' }
+            - { regexp: 'cache_dir ufs /var/spool/squid 100 16 256', line: 'cache_dir ufs /var/spool/squid 100 16 256' }
+
+        - name: Squidサービスの再起動
+          service:
+            name: squid
+            state: restarted
+
+- hosts: pxes
+  become: yes
+  tasks:
+    - name: 設定ディレクトリの作成
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /root/config
+        - /root/assets
+
+    - name: NetBoot.xyzのセットアップ
+      community.docker.docker_container:
+        name: netbootxyz
+        image: lscr.io/linuxserver/netbootxyz:latest
+        env:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "Etc/UTC"
+          MENU_VERSION: "1.9.9"
+          PORT_RANGE: "30000:30010"
+          SUBFOLDER: "/"
+        volumes:
+          - /root/config:/config
+          - /root/assets:/assets
+        ports:
+          - 3000:3000
+          - 69:69/udp
+          - 8080:80
+        restart_policy: always
+
+- hosts: vpns
+  become: yes
+  tasks:
+    - name: WireGuardディレクトリの作成
+      file:
+        path: /etc/wireguard
+        state: directory
+
+    - name: WireGuard VPNのセットアップ
+      community.docker.docker_container:
+        name: wireguard
+        image: linuxserver/wireguard:latest
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        ports:
+          - 51820:51820/udp
+        volumes:
+          - /etc/wireguard:/config
+          - /lib/modules:/lib/modules
+        env:
+          PUID: "1000"
+          PGID: "1000"
+          SERVERPORT: "51820"
+          SERVERURL: tomokawa.myddns.me
+          PEERS: "16"
+          PEERDNS: "auto"
+          INTERNAL_SUBNET: "10.13.13.0"
+          ALLOWEDIPS: "0.0.0.0/0"
+          LOG_CONFS: "true"
+        sysctls:
+          net.ipv4.conf.all.src_valid_mark: "1"
+        restart_policy: always
+
+- hosts: ldaps
+  become: yes
+  tasks:
+    - name: OpenLDAPのNFSボリューム作成
+      community.docker.docker_volume:
+        name: "{{ item.name }}"
+        driver: local
+        driver_options:
+          type: nfs
+          o: "addr=qnap2,rw,nfsvers=4"
+          device: "{{ item.device }}"
+      loop:
+        - { name: "certificates", device: ":/config/ldap/cert" }
+        - { name: "database", device: ":/config/ldap/database" }
+        - { name: "config", device: ":/config/ldap/config" }
+
+    - name: OpenLDAPコンテナのデプロイ
+      community.docker.docker_container:
+        name: openldap
+        image: osixia/openldap:latest
+        ports:
+          - 389:389
+          - 636:636
+        volumes:
+          - certificates:/container/service/slapd/assets/certs
+          - database:/var/lib/ldap
+          - config:/etc/ldap/slapd.d
+        env:
+          LDAP_ORGANISATION: "home"
+          LDAP_DOMAIN: "home.local"
+          LDAP_ADMIN_USERNAME: "admin"
+          LDAP_ADMIN_PASSWORD: "admin_pass"
+          LDAP_CONFIG_PASSWORD: "config_pass"
+          LDAP_BASE_DN: "dc=home,dc=local"
+          LDAP_TLS_CRT_FILENAME: "server.crt"
+          LDAP_TLS_KEY_FILENAME: "server.key"
+          LDAP_TLS_CA_CRT_FILENAME: "home.local.ca.crt"
+          LDAP_READONLY_USER: "true"
+          LDAP_READONLY_USER_USERNAME: "user-ro"
+          LDAP_READONLY_USER_PASSWORD: "ro_pass"
+        restart_policy: always
+
+    - name: phpLDAPadminコンテナのデプロイ
+      community.docker.docker_container:
+        name: phpldapadmin
+        image: osixia/phpldapadmin:latest
+        ports:
+          - 7443:443
+        env:
+          PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+          PHPLDAPADMIN_HTTPS: "true"
+        restart_policy: always
+
+- hosts: jupyters
+  become: yes
+  tasks:
+    - name: Jupyterワークディレクトリの作成
+      file:
+        path: /root/work
+        state: directory
+        mode: '0777'
+
+    - name: Jupyter Notebookのデプロイ
+      community.docker.docker_container:
+        name: jupyter
+        image: jupyter/scipy-notebook:latest
+        ports:
+          - 8888:8888
+        volumes:
+          - /root/work:/home/jovyan/work
+        restart_policy: always
+        command: start-notebook.sh --NotebookApp.token='uCm10fNvi'

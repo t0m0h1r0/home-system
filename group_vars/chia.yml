@@ -1,0 +1,103 @@
+# chia.yml - Chia環境固有の変数
+
+# Chiaクラスター設定
+chia_cluster_config:
+  managers:
+    - chia-m1
+  
+  iscsi_nodes:
+    - chia-h3
+    - chia-h4
+    - chia-h5
+    - chia-h6
+    - chia-h7
+
+  database_nodes:
+    - chia-f1
+
+# ストレージ設定
+storage_config:
+  iscsi:
+    mount_point: /mnt/iscsi
+    device: sdb
+    fstype: xfs
+    options: ro
+    pv_name: chia_plots
+
+  nas_storage:
+    qnap:
+      path: /share/chia/plots/
+    omv:
+      path: /srv/mergerfs/x/chia/plots/
+
+# ネットワーク設定
+network_config:
+  domain: home.local
+  internal_subnet: 10.13.13.0/24
+
+# Docker Swarmラベル設定
+swarm_labels:
+  managers:
+    ldap: "true"
+  iscsi:
+    storage: "true"
+  nas:
+    storage: "true"
+  compute:
+    compute: "true"
+  database:
+    database: "true"
+    grafana: "true"
+
+# プロット設定
+plotting_config:
+  temp_dir: /tmp/chia_plots
+  final_dir: /mnt/chia/plots
+  max_concurrent_plots: 2
+  ram_usage: 4096  # MB
+  threads: 2
+
+# ファーミング設定
+farming_config:
+  harvester_count: 5
+  plot_refresh_interval: 60  # 秒
+  max_plot_file_size: 108644381440  # 101 GiB
+
+# バックアップ設定
+backup_config:
+  enabled: true
+  schedule: 
+    frequency: daily
+    time: "03:00"
+  retention:
+    daily: 7
+    weekly: 4
+    monthly: 3
+
+# モニタリング設定
+monitoring_config:
+  enabled: true
+  metrics:
+    - plots_count
+    - total_storage
+    - current_sync_status
+    - estimated_time_to_win
+
+# セキュリティ設定
+security_config:
+  firewall:
+    enabled: true
+    allowed_ports:
+      - 8444  # Chia network port
+      - 8447  # Farmer port
+  
+  ssl_certificates:
+    ca_path: /etc/chia/ssl/ca
+    cert_path: /etc/chia/ssl/daemon
+
+# ユーザー設定
+user_config:
+  username: chia
+  home_directory: /home/users/chia
+  uid: 1001
+  gid: 500

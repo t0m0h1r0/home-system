@@ -1,0 +1,47 @@
+# all.yml - 全環境共通の変数
+
+# デフォルトのSSH接続設定
+ansible_connection: ssh
+ansible_user: root
+
+# 共通アプリケーションリスト
+common_base_apps:
+  - tmux
+  - htop
+  - qemu-guest-agent
+
+# 共通Dockerアプリケーション
+common_docker_apps:
+  - docker.io
+  - docker-compose
+  - python3-docker
+
+# NFS関連
+common_nfs_apps:
+  - nfs-common
+
+# GitHub ID (デフォルト値)
+github_id: t0m0h1r0
+
+# デフォルトのタイムゾーン
+default_timezone: Etc/UTC
+
+# デフォルトのユーザーID
+default_puid: "1000"
+default_pgid: "1000"
+
+# ネットワーク設定
+default_dns_servers:
+  - 8.8.8.8
+  - 1.1.1.1
+  - 9.9.9.9
+
+# セキュリティ設定
+ssh_key_import: true
+
+# デフォルトのコンテナ設定
+default_container_settings:
+  restart_policy: always
+  log_options:
+    max-size: "10m"
+    max-file: "3"

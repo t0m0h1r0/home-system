@@ -1,0 +1,58 @@
+# vpns.yml - VPN環境固有の変数
+
+# WireGuard設定
+wireguard_config:
+  container:
+    image: linuxserver/wireguard:latest
+    name: wireguard
+  
+  network:
+    port: 51820
+    protocol: udp
+    server_url: tomokawa.myddns.me
+
+  peer_settings:
+    max_peers: 16
+    peer_dns: auto
+    internal_subnet: 10.13.13.0
+    allowed_ips: 0.0.0.0/0
+
+# VPNセキュリティ設定
+vpn_security_config:
+  encryption:
+    type: WireGuard
+    key_length: 256
+  
+  logging:
+    enabled: true
+    log_confs: true
+
+# ネットワーク設定
+network_config:
+  mtu: 1420
+  keepalive_interval: 25
+  persistent_keepalive: true
+
+# IPアドレス割り当て
+ip_allocation:
+  start_ip: 10.13.13.2
+  end_ip: 10.13.13.254
+  netmask: 255.255.255.0
+
+# マシン固有設定
+machine_configs:
+  capabilities:
+    - NET_ADMIN
+    - SYS_MODULE
+  
+  modules:
+    - wireguard
+    - ip_tables
+
+# ポートフォワーディング設定
+port_forwarding:
+  enabled: true
+  rules:
+    - external_port: 51820
+      internal_port: 51820
+      protocol: udp

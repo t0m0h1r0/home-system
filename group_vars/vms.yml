@@ -1,0 +1,44 @@
+# vms.yml - 仮想マシン環境固有の変数
+
+# VM共通設定
+vm_config:
+  default_user: tomohiro
+  network_type: bridge
+  default_bridge: br0
+
+# Docker関連設定
+vm_docker_config:
+  install_docker: true
+  use_docker_compose: true
+
+# リソース割り当て
+vm_resources:
+  default_cpu_cores: 2
+  default_memory: 4096  # MB
+  default_disk_size: 50  # GB
+
+# ネットワーク設定
+vm_network_config:
+  subnet: 192.168.1.0/24
+  gateway: 192.168.1.1
+  dns_servers:
+    - 8.8.8.8
+    - 1.1.1.1
+
+# IPアドレス割り当て
+vm_ip_addresses:
+  - 192.168.1.220
+  - 192.168.1.221
+  - 192.168.1.222
+  - 192.168.1.223
+  - 192.168.1.235
+  - 192.168.1.236
+  - 192.168.1.237
+  - 192.168.1.238
+
+# セキュリティ設定
+vm_security_config:
+  firewall_enabled: true
+  ssh_port: 22
+  allowed_networks:
+    - 192.168.1.0/24

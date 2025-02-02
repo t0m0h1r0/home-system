@@ -1,0 +1,37 @@
+# Docker レジストリ設定タスク
+
+- name: Docker daemon設定の更新
+  template:
+    src: ../templates/docker-daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: 
+    - Dockerサービスの再起動
+
+- name: 信頼できないレジストリの追加
+  lineinfile:
+    path: /etc/docker/daemon.json
+    regexp: '"insecure-registries":'
+    line: '    "insecure-registries": ["{{ registry_config.docker.host }}:{{ registry_config.docker.port }}"],'
+  notify: 
+    - Dockerサービスの再起動
+
+- name: レジストリミラーの設定
+  lineinfile:
+    path: /etc/docker/daemon.json
+    regexp: '"registry-mirrors":'
+    line: '    "registry-mirrors": ["http://{{ registry_config.docker.host }}:{{ registry_config.docker.port }}"]'
+  notify: 
+    - Dockerサービスの再起動
+
+- name: Dockerグループへのユーザー追加
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+  handlers:
+    - name: Dockerサービスの再起動
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
